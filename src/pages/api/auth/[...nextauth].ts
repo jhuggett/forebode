@@ -1,59 +1,65 @@
-import NextAuth from 'next-auth';
-import { AppProviders } from 'next-auth/providers';
+import NextAuth, { NextAuthOptions } from 'next-auth';
 import CredentialsProvider from 'next-auth/providers/credentials';
-import GithubProvider from 'next-auth/providers/github';
+import { prisma } from "~/server/prisma";
+import bcrypt from 'bcrypt'
 
-let useMockProvider = process.env.NODE_ENV === 'test';
-const { GITHUB_CLIENT_ID, GITHUB_SECRET, NODE_ENV, APP_ENV } = process.env;
-if (
-  (NODE_ENV !== 'production' || APP_ENV === 'test') &&
-  (!GITHUB_CLIENT_ID || !GITHUB_SECRET)
-) {
-  console.log('⚠️ Using mocked GitHub auth correct credentials were not added');
-  useMockProvider = true;
+export const authOptions: NextAuthOptions = {
+    session: {
+      strategy: 'jwt'
+    },
+    jwt: {
+      maxAge: 60 * 60 * 24
+    },
+    providers: [
+        CredentialsProvider({
+            id: "credentials",
+            name: "Credentials",
+            credentials: {
+              email: { label: "Email", type: "text", placeholder: "john@smith.com" },
+              password: { label: "Password", type: "password" }
+            },
+            async authorize(credentials) {
+              if (!credentials) return null
+              const { email, password } = credentials
+              
+              const user = await prisma.user.findUnique({
+                where: {
+                  email
+                }
+              })
+
+              if (!user || !user.password) return null
+
+              const verified = await bcrypt.compare(password, user.password)
+
+              if (!verified) return null
+              
+              return {
+                id: String(user.id),
+                email,
+                name: user.name
+              }
+            },
+        }),
+    ],
+    callbacks: {
+      async signIn({ user, account, profile, email, credentials }) {
+        // whether or not the user is allowed to log in
+        if (user.id) return true
+        return false
+      },
+      async jwt({ token, user, account, profile}) {
+        return token
+      },
+      async redirect({ url, baseUrl }) {
+        // Allows relative callback URLs
+        if (url.startsWith("/")) return `${baseUrl}${url}`
+        // Allows callback URLs on the same origin
+        else if (new URL(url).origin === baseUrl) return url
+        return baseUrl
+      }
+    }
+    
 }
-const providers: AppProviders = [];
-if (useMockProvider) {
-  providers.push(
-    CredentialsProvider({
-      id: 'github',
-      name: 'Mocked GitHub',
-      async authorize(credentials) {
-        if (credentials) {
-          const user = {
-            id: credentials.name,
-            name: credentials.name,
-            email: credentials.name,
-          };
-          return user;
-        }
-        return null;
-      },
-      credentials: {
-        name: { type: 'test' },
-      },
-    }),
-  );
-} else {
-  if (!GITHUB_CLIENT_ID || !GITHUB_SECRET) {
-    throw new Error('GITHUB_CLIENT_ID and GITHUB_SECRET must be set');
-  }
-  providers.push(
-    GithubProvider({
-      clientId: GITHUB_CLIENT_ID,
-      clientSecret: GITHUB_SECRET,
-      profile(profile) {
-        return {
-          id: profile.id,
-          name: profile.login,
-          email: profile.email,
-          image: profile.avatar_url,
-        } as any;
-      },
-    }),
-  );
-}
-export default NextAuth({
-  // Configure one or more authentication providers
-  providers,
-});
+
+export default (req, res) => NextAuth(req, res, authOptions)

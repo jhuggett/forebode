@@ -1,23 +1,79 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-datasource db {
-  provider = "postgres"
-  url      = env("DATABASE_URL")
-}
-
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["referentialIntegrity"]
 }
 
-model Post {
-  id    String @id @default(uuid())
-  title String
-  text  String
+datasource db {
+  provider             = "mysql"
+  url                  = env("DATABASE_URL")
+  referentialIntegrity = "prisma"
+}
 
-  // To return `Date`s intact through the API we use transformers
-  // https://trpc.io/docs/data-transformers
-  // This is unique so it can be used for cursor-based pagination
+model User {
+  id        Int      @id @default(autoincrement())
   createdAt DateTime @default(now())
-  updatedAt DateTime @default(now()) @updatedAt
+  updatedAt DateTime @updatedAt
+  name      String   @db.VarChar(255)
+
+  email    String? @unique @db.VarChar(255)
+  password String? @db.VarChar(255)
+
+  account   Account? @relation(fields: [accountId], references: [id], onUpdate: NoAction)
+  accountId Int?
+  Event     Event[]
+}
+
+model Account {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String @db.VarChar(255)
+
+  users   User[]
+  animals Animal[]
+  Event   Event[]
+}
+
+model Animal {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name String @db.VarChar(255)
+
+  account   Account @relation(fields: [accountId], references: [id], onUpdate: NoAction)
+  accountId Int
+
+  events Event[]
+}
+
+model Event {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  animal   Animal? @relation(fields: [animalId], references: [id])
+  animalId Int?
+
+  account   Account? @relation(fields: [accountId], references: [id])
+  accountId Int?
+
+  user   User @relation(fields: [userId], references: [id])
+  userId Int
+
+  type          EventType @relation(fields: [eventTypeName], references: [name])
+  eventTypeName String    @db.VarChar(255)
+}
+
+model EventType {
+  id        Int      @id @default(autoincrement())
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  name  String  @unique @db.VarChar(255)
+  Event Event[]
 }

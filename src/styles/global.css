@@ -1,3 +1,11 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+html, body, #__next {
+    width: 100%;
+    margin: 0;
+
+    @apply bg-slate-300;
+    @apply text-slate-800;
+}
