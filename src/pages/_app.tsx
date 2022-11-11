@@ -67,7 +67,7 @@ const App = (({ Component, pageProps }: AppPropsWithLayout) => {
 
   const ConfiguredComponent = () => <>
     <Component {...pageProps} />
-    { location.origin.includes('forebode.app') && <Analytics /> }
+    { process.env.NODE_ENV === 'production' && <Analytics /> }
   </>
 
   return <SessionProvider session={(pageProps as any).session}>
