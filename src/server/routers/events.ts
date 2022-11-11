@@ -47,7 +47,11 @@ export const eventsRouter = router({
         },
         include: {
           user: true
-        }
+        },
+        orderBy: {
+          createdAt: 'desc'
+        },
+        take: 10
       })
 
       sortEvents(events, eventMap)
@@ -56,9 +60,13 @@ export const eventsRouter = router({
         where: {
           animalId
         },
+        orderBy: {
+          createdAt: 'desc'
+        },
         include: {
           user: true
-        }
+        },
+        take: 10
       })
 
       sortEvents(events, eventMap)

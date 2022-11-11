@@ -49,6 +49,8 @@ model Animal {
   accountId Int
 
   events Event[]
+
+  eventTypes EventType[]
 }
 
 model Event {
@@ -76,4 +78,6 @@ model EventType {
 
   name  String  @unique @db.VarChar(255)
   Event Event[]
+
+  animals Animal[]
 }

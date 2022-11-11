@@ -9,6 +9,7 @@ import React from 'react';
 import { Session } from 'next-auth';
 import { Loader } from '~/components/Loader';
 import { useRouter } from 'next/router';
+import { Analytics } from '@vercel/analytics/react';
 
 export const AuthContext = React.createContext<Session | null>(null)
 
@@ -64,7 +65,10 @@ const App = (({ Component, pageProps }: AppPropsWithLayout) => {
   const getLayout =
     Component.getLayout ?? ((page) => <DefaultLayout>{page}</DefaultLayout>);
 
-  const ConfiguredComponent = () => <Component {...pageProps} />
+  const ConfiguredComponent = () => <>
+    <Component {...pageProps} />
+    { location.origin.includes('forebode.app') && <Analytics /> }
+  </>
 
   return <SessionProvider session={(pageProps as any).session}>
     { getLayout(<>

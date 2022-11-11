@@ -2,6 +2,7 @@ import { prisma } from "~/server/prisma";
 import { protectedProcedure, router } from "../trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { AllEventTypes } from "../events";
 
 export const animalRouter = router({
   create: protectedProcedure.input(
@@ -19,7 +20,10 @@ export const animalRouter = router({
     } = await prisma.animal.create({
       data: {
         name,
-        accountId: ctx.accountId!
+        accountId: ctx.accountId!,
+        eventTypes: {
+          connect: AllEventTypes.map(e => ({ name: e.name }))
+        }
       }
     })
 
@@ -41,6 +45,9 @@ export const animalRouter = router({
     const animal = await prisma.animal.findFirst({
       where: {
         id
+      },
+      include: {
+        eventTypes: true
       }
     })
 
@@ -51,7 +58,8 @@ export const animalRouter = router({
     }
 
     return {
-      name: animal.name
+      name: animal.name,
+      eventTypes: animal.eventTypes
     }
   }),
   delete: protectedProcedure.input(

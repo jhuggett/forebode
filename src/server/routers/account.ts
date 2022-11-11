@@ -26,13 +26,35 @@ export const accountRouter = router({
       })
     }
 
+    const summary = await prisma.animal.findMany({
+      where: {
+        accountId: account.id,
+      },
+      include: {
+        events: {
+          distinct: 'eventTypeName',
+          orderBy: {
+            createdAt: 'desc'
+          },
+          include: {
+            type: {
+              select: {
+                name: true
+              }
+            }
+          }
+        },
+      }
+    })
+
     return {
       id: account.id,
       name: account.name,
       animals: account.animals.map(animal => ({
         name: animal.name,
         id: animal.id
-      }))
+      })),
+      summary
     }
   }),
 });

@@ -2,7 +2,6 @@ import Link from 'next/link'
 import { useRouter } from 'next/router';
 import { getDashboardLayout } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
-import { AllEventTypes } from '~/server/events';
 import { trpc } from '~/utils/trpc';
 import { Card } from '../dashboard';
 import { NextPageWithLayout } from '../_app';
@@ -85,12 +84,12 @@ const AnimalPage: NextPageWithLayout = () => {
         <Card>
           <h1 className='text-2xl font-serif'>
             { animal.name }
-          </h1>
+          </h1> 
         </Card>
         
       </div>
       <div className={`flex flex-wrap justify-center gap-4 w-full px-2`}>
-      { AllEventTypes.map(eventType => {
+      { animal.eventTypes.map(eventType => {
 				const eventsOfType = events.filter(e => e[0] === eventType.name)[0]?.[1]
           .sort((a, b) => a.createdAt < b.createdAt ? 1 : -1) ?? []
 
@@ -104,7 +103,7 @@ const AnimalPage: NextPageWithLayout = () => {
 				return (
 					<div className='max-w-sm w-full'>
             <Card>
-              <h3 className='text-xl font-semibold border-b-2 border-gray-600'>{ eventType.displayName }</h3>
+              <h3 className='text-xl font-semibold border-b-2 border-gray-600'>{ eventType.name }</h3>
               { numberOfEvents > 0 &&
                 (
                   <div className='m-4'>
