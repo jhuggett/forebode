@@ -51,27 +51,38 @@ const DashboardPage: NextPageWithLayout = () => {
 
 												return (
 													<div className='px-4'>
-														<p className='text-sm'>
+														<p className='text-sm text-center'>
 														{ getEventTypeForName(eventType.name)?.displayName }
 														</p>
 														{ latestEvent && (
-															<>
-															<p className='italic text-xl text-center py-1 text-gray-800'>{ (() => {
+															<div className='flex justify-around items-center'>
+															
+															{ (() => {
 																/*
 																Should also handle weeks, months, and years in the future
 																*/
 
-																if (durationSince.days) return formatDuration({days: durationSince.days})
-																if (durationSince.hours) return formatDuration({hours: durationSince.hours})
-																if (durationSince.minutes) return formatDuration({minutes: durationSince.minutes})
-																return formatDuration({seconds: durationSince.seconds})
-															})() }</p>
-															<p className='font-thin text-sm text-right'>{ latestEvent.user.name }</p>
-															</>
+																if (durationSince.days) return <p className='italic text-2xl text-center font-bold py-1 text-gray-900'>
+																	{`${durationSince.days}d`}
+																</p>
+																if (durationSince.hours) return <p className='italic text-xl text-center font-semibold py-1 text-gray-800'>
+																	{`${durationSince.hours}h`}
+																</p>
+																	if (durationSince.minutes) return <p className='italic text-lg text-center font-medium py-1 text-gray-700'>
+																		{`${durationSince.minutes}m`}
+																	</p>
+																	return <p className='italic text-md text-center py-1 text-gray-600'>
+																		{`${durationSince.seconds}s`}
+																	</p>
+																	})() }
+															
+															</div>
+															
 														)  }
 														{ !latestEvent && (
 															<p>Has not happened yet.</p>
 														)} 
+														<p className='font-thin text-sm text-center'>{ latestEvent.user.name }</p>
 														
 													</div>
 												)
