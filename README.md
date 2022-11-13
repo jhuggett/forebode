@@ -1,4 +1,4 @@
 # Forebode
 Pet habit tracker. In development.
 
-See [forebode.app](forebode.app).
+See [forebode.app](https://forebode.app).
