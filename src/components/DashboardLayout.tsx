@@ -54,6 +54,9 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
             <NavLink href={'/animals'}>
               Animals
             </NavLink>
+            <NavLink href={'/settings'}>
+              Settings
+            </NavLink>
           </div>
           <SignOutButton />
         </div>
