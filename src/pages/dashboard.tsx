@@ -44,7 +44,7 @@ const DashboardPage: NextPageWithLayout = () => {
 								</Link>
 								</p>
 								<div className='w-full flex flex-wrap gap-2 justify-evenly items-center'>
-									{animal.events.map(event => {
+									{animal.events.sort((a, b) => a.type.name > b.type.name ? 1 : -1).map(event => {
 
 										const latestEvent = event
 										const eventType = event.type
