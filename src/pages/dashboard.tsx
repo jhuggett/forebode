@@ -1,4 +1,4 @@
-import { formatDistanceToNow } from 'date-fns';
+import { formatDistanceToNow, formatDuration, intervalToDuration } from 'date-fns';
 import Link from 'next/link';
 import { getDashboardLayout } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
@@ -33,7 +33,7 @@ const DashboardPage: NextPageWithLayout = () => {
 						return (
 							<div>
 								<Card>
-									<div className=''>
+									<div className=' text-gray-600'>
 										<p className='text-center font-bold font-serif text-2xl pb-4'>
 										<Link href={`/animals/${animal.id}`}>
 											{animal.name}
@@ -45,6 +45,10 @@ const DashboardPage: NextPageWithLayout = () => {
 												const latestEvent = event
 												const eventType = event.type
 
+												const now = new Date()
+
+												const durationSince = intervalToDuration({start: latestEvent.createdAt, end: now})
+
 												return (
 													<div className='px-4'>
 														<p className='text-sm'>
@@ -52,7 +56,16 @@ const DashboardPage: NextPageWithLayout = () => {
 														</p>
 														{ latestEvent && (
 															<>
-															<p className='italic text-xl text-center py-1 font-bold'>{ formatDistanceToNow(latestEvent.createdAt) } ago</p>
+															<p className='italic text-xl text-center py-1 text-gray-800'>{ (() => {
+																/*
+																Should also handle weeks, months, and years in the future
+																*/
+
+																if (durationSince.days) return formatDuration({days: durationSince.days})
+																if (durationSince.hours) return formatDuration({hours: durationSince.hours})
+																if (durationSince.minutes) return formatDuration({minutes: durationSince.minutes})
+																return formatDuration({seconds: durationSince.seconds})
+															})() }</p>
 															<p className='font-thin text-sm text-right'>{ latestEvent.user.name }</p>
 															</>
 														)  }
