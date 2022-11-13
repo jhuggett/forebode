@@ -2,6 +2,7 @@ import { formatDistanceToNow } from 'date-fns';
 import Link from 'next/link';
 import { getDashboardLayout } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
+import { getEventTypeForName } from '~/server/events';
 import { trpc } from '~/utils/trpc';
 import { NextPageWithLayout, useAuth } from './_app';
 
@@ -52,7 +53,7 @@ const DashboardPage: NextPageWithLayout = () => {
 										return (
 											<div className='px-4'>
 												<p className='text-sm text-right font-thin'>
-												{ eventType.name.toUpperCase() }
+												{ getEventTypeForName(eventType.name)?.displayName }
 												</p>
 												{ latestEvent && (
 													<p className='italic text-xl'>{ formatDistanceToNow(latestEvent.createdAt) }</p>

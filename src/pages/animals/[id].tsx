@@ -7,6 +7,7 @@ import { Card } from '../dashboard';
 import { NextPageWithLayout } from '../_app';
 import { Event } from 'prisma/prisma-client'
 import { format, formatDistanceToNow, formatRelative } from 'date-fns';
+import { getEventTypeForName } from '~/server/events';
 
 const EventCard = ({} : {
   eventTypeName: string,
@@ -89,7 +90,7 @@ const AnimalPage: NextPageWithLayout = () => {
         
       </div>
       <div className={`flex flex-wrap justify-center gap-4 w-full px-2`}>
-      { animal.eventTypes.map(eventType => {
+      { animal.eventTypes.sort((a, b) => a.name > b.name ? 1 : -1).map(eventType => {
 				const eventsOfType = events.filter(e => e[0] === eventType.name)[0]?.[1]
           .sort((a, b) => a.createdAt < b.createdAt ? 1 : -1) ?? []
 
@@ -103,7 +104,7 @@ const AnimalPage: NextPageWithLayout = () => {
 				return (
 					<div className='max-w-sm w-full'>
             <Card>
-              <h3 className='text-xl font-semibold border-b-2 border-gray-600'>{ eventType.name }</h3>
+              <h3 className='text-xl font-semibold border-b-2 border-gray-600'>{ getEventTypeForName(eventType.name)?.displayName }</h3>
               { numberOfEvents > 0 &&
                 (
                   <div className='m-4'>
