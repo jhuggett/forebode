@@ -39,7 +39,7 @@ const DashboardPage: NextPageWithLayout = () => {
 					{ account.summary.filter(animal => animal.events.length > 0).map(animal => {
 						return (
 							<div className='pt-4'>
-								<p className='text-center font-bold'>
+								<p className='text-center font-bold font-serif text-xl pt-4 pb-6'>
 								<Link href={`/animals/${animal.id}`}>
 									{animal.name}
 								</Link>
@@ -52,15 +52,19 @@ const DashboardPage: NextPageWithLayout = () => {
 
 										return (
 											<div className='px-4'>
-												<p className='text-sm text-right font-thin'>
+												<p className='text-sm'>
 												{ getEventTypeForName(eventType.name)?.displayName }
 												</p>
 												{ latestEvent && (
-													<p className='italic text-xl'>{ formatDistanceToNow(latestEvent.createdAt) }</p>
+													<>
+													<p className='italic text-xl'>{ formatDistanceToNow(latestEvent.createdAt) } ago</p>
+													<p className='font-thin text-sm text-right'>{ latestEvent.user.name }</p>
+													</>
 												)  }
 												{ !latestEvent && (
 													<p>Has not happened yet.</p>
-												)}
+												)} 
+												
 											</div>
 										)
 									})}

@@ -41,6 +41,11 @@ export const accountRouter = router({
               select: {
                 name: true
               }
+            },
+            user: {
+              select: {
+                name: true
+              }
             }
           }
         },
