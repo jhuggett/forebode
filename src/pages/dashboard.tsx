@@ -33,7 +33,7 @@ const DashboardPage: NextPageWithLayout = () => {
 
 	return (
 		<div className="mt-12 flex flex-wrap items-center justify-center gap-8">
-			<div className='max-w-2xl w-full'>
+			<div className='max-w-2xl w-full px-4'>
 				<Card>
 					<div className='flex flex-col divide-y-2 divide-gray-300 gap-4'>
 					{ account.summary.filter(animal => animal.events.length > 0).map(animal => {
