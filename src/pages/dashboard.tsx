@@ -63,13 +63,13 @@ const DashboardPage: NextPageWithLayout = () => {
 																*/
 
 																if (durationSince.days) return <p className='italic text-2xl text-center font-bold py-1 text-gray-900'>
-																	{`${durationSince.days}d`}
+																	{`${durationSince.days}d ${durationSince.hours}h`}
 																</p>
 																if (durationSince.hours) return <p className='italic text-xl text-center font-semibold py-1 text-gray-800'>
-																	{`${durationSince.hours}h`}
+																	{`${durationSince.hours}h ${durationSince.minutes}m`}
 																</p>
 																	if (durationSince.minutes) return <p className='italic text-lg text-center font-medium py-1 text-gray-700'>
-																		{`${durationSince.minutes}m`}
+																		{`${durationSince.minutes}m ${durationSince.seconds}s`}
 																	</p>
 																	return <p className='italic text-md text-center py-1 text-gray-600'>
 																		{`${durationSince.seconds}s`}
