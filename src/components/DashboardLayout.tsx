@@ -10,7 +10,7 @@ export const SignOutButton = () =>
 	<button onClick={() => signOut({
 		callbackUrl: '/'
 	})}
-  className='hidden sm:block py-2 px-4 rounded-lg bg-gray-400 text-gray-200 font-semibold whitespace-nowrap'
+  className='py-2 px-4 rounded-lg bg-gray-400 text-gray-200 font-semibold whitespace-nowrap'
   > 
 		Log out
 	</button>

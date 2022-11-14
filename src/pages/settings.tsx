@@ -32,15 +32,14 @@ const SettingsPage: NextPageWithLayout = () => {
 		<div className="mt-12 flex flex-wrap items-center justify-center gap-8">
 			<div className='flex gap-4 flex-wrap p-4'>
 				<Card>
-					<p>Account: { account.name }</p>
-					<p>
-						{`Welcome ${name}. You're signed in as ${email}`}
-					</p>
+          <p className='p-2'>
+            You're signed in as { name } ({ email }) on { account.name }.
+          </p>
 					<p>
 						{`Joining code: ${account.id}`}
 					</p>
-          <div className='flex justify-end'>
-          <SignOutButton />
+          <div className='flex justify-end mt-2'>
+            <SignOutButton />
           </div>
 				</Card>
 			</div>
