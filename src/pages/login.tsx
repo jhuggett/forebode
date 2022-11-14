@@ -1,10 +1,10 @@
 import Link from 'next/link';
-import { useForm } from 'react-hook-form';
-import { trpc } from '~/utils/trpc';
+import { useForm} from 'react-hook-form';
 import { NextPageWithLayout } from './_app';
 import { signIn, useSession } from "next-auth/react"
 import { useRouter } from 'next/router';
 import { Loader } from '~/components/Loader';
+import { Email, Password, SubmitButton, Text } from '~/components/Forms';
 
 type FormData = {
   email: string,
@@ -12,13 +12,10 @@ type FormData = {
 }
 
 const LoginPage: NextPageWithLayout = () => {
+  const form = useForm<FormData>()
   const {
-    register,
-    handleSubmit,
-    formState: {
-      errors
-    }
-  } = useForm<FormData>()
+    handleSubmit
+  } = form
 
   const onSubmit = ({
     email,
@@ -50,9 +47,9 @@ const LoginPage: NextPageWithLayout = () => {
     <div className="h-screen flex flex-col items-center justify-center">
       <h1 className="text-8xl text-center">Login</h1>
       <form className='flex flex-col gap-4 m-8' onSubmit={handleSubmit(onSubmit)}>
-        <input {...register("email")} />
-        <input {...register("password", { required: true })} />
-        <input type="submit" />
+        <Email form={form} required />
+        <Password form={form} required />
+        <SubmitButton />
       </form>
     </div>
   );

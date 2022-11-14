@@ -4,6 +4,7 @@ import { NextPageWithLayout } from './_app';
 import { signIn, useSession } from "next-auth/react"
 import { useRouter } from 'next/router';
 import { Loader } from '~/components/Loader';
+import { Email, Password, Text, SubmitButton } from '~/components/Forms';
 
 type FormData = {
   email: string,
@@ -14,13 +15,14 @@ type FormData = {
 }
 
 const SignupPage: NextPageWithLayout = () => {
+  const form = useForm<FormData>()
   const {
     register,
     handleSubmit,
     formState: {
       errors
     }
-  } = useForm<FormData>()
+  } = form
 
   const {
     mutate,
@@ -68,20 +70,23 @@ const SignupPage: NextPageWithLayout = () => {
     <div className="h-screen flex flex-col items-center justify-center">
       <h1 className="text-8xl text-center">Signup</h1>
       <form className='flex flex-col gap-4 m-8' onSubmit={handleSubmit(onSubmit)}>
-        Email
-        <input {...register("email", { required: true })} />
-        Your Name
-        <input {...register("userName", { required: true })} />
-        Password
-        <input {...register("password", { required: true })} />
-        Account name (to create an account)
-        <input {...register("accountName")} />
-        Joining Code (to join an existing account)
-        <input {...register("joiningCode")} />
-        <input type="submit" />
+        <Text form={form} label='Name' name='userName' placeholder='John' required />
+        <Email form={form} required />
+        <Password form={form} required />
+
+        <div className='pt-8 flex flex-col gap-2'>
+        <Text form={form} label='Account name (to create a new account)' name='accountName' placeholder='Smiths' />
+        <p className='text-center'>
+          or
+        </p>
+        <Text form={form} label='Joining Code (to join an existing account)' name='joiningCode' placeholder='42' />
+        </div>
+        <SubmitButton />
       </form>
     </div>
   );
 };
+
+
 
 export default SignupPage;
