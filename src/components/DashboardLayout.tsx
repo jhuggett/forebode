@@ -6,11 +6,11 @@ import { ReactNode } from 'react';
 
 type DashboardLayoutProps = { children: ReactNode };
 
-const SignOutButton = () => 
+export const SignOutButton = () => 
 	<button onClick={() => signOut({
 		callbackUrl: '/'
 	})}
-  className='hidden sm:block py-2 px-4 rounded-lg bg-gray-400 text-gray-200 font-semibold m-4 whitespace-nowrap'
+  className='hidden sm:block py-2 px-4 rounded-lg bg-gray-400 text-gray-200 font-semibold whitespace-nowrap'
   > 
 		Log out
 	</button>
@@ -43,8 +43,8 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </Head>
 
       <main>
-        <div className='w-full bg-gray-200 flex justify-between'>
-          <div className='hidden sm:flex justify-center items-center mx-4 text-xl font-bold'>
+        <div className='w-full mt-4 flex flex-col justify-between'>
+          <div className='flex justify-center items-center mx-4 text-xl font-bold'>
             Forebode
           </div>
           <div className='flex justify-center items-center w-full gap-4'>
@@ -58,7 +58,6 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               Settings
             </NavLink>
           </div>
-          <SignOutButton />
         </div>
         {children}
       </main>

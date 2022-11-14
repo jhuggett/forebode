@@ -1,4 +1,4 @@
-import { getDashboardLayout } from '~/components/DashboardLayout';
+import { getDashboardLayout, SignOutButton } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
 import { NextPageWithLayout, useAuth } from './_app';
@@ -39,6 +39,9 @@ const SettingsPage: NextPageWithLayout = () => {
 					<p>
 						{`Joining code: ${account.id}`}
 					</p>
+          <div className='flex justify-end'>
+          <SignOutButton />
+          </div>
 				</Card>
 			</div>
 		</div>
