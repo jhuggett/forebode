@@ -33,9 +33,10 @@ model Account {
 
   name String @db.VarChar(255)
 
-  users   User[]
-  animals Animal[]
-  Event   Event[]
+  users      User[]
+  animals    Animal[]
+  events     Event[]
+  eventTypes EventType[]
 }
 
 model Animal {
@@ -80,4 +81,7 @@ model EventType {
   Event Event[]
 
   animals Animal[]
+
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId Int
 }
