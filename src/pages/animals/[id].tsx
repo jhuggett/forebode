@@ -4,10 +4,11 @@ import { getDashboardLayout } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
 import { Card } from '../dashboard';
-import { NextPageWithLayout } from '../_app';
+import { NextPageWithLayout, useAuth } from '../_app';
 import { Event } from 'prisma/prisma-client'
-import { format, formatDistanceToNow, formatRelative } from 'date-fns';
+import { addHours, addMinutes, format, formatDistanceToNow, formatRelative, isAfter, isBefore, subHours } from 'date-fns';
 import { getEventTypeForName } from '~/server/events';
+import { add } from 'date-fns/esm';
 
 const EventCard = ({} : {
   eventTypeName: string,
@@ -34,6 +35,10 @@ const AnimalPage: NextPageWithLayout = () => {
   const id = parseInt(router.query.id as string)
 
   const trpcContext = trpc.useContext()
+
+  const {
+		name
+	} = useAuth()
 
   const {
     data: animal,
@@ -70,6 +75,15 @@ const AnimalPage: NextPageWithLayout = () => {
     }
   })
 
+  const {
+    mutate: deleteEvent,
+    isLoading: undoingEvent
+  } = trpc.events.delete.useMutation({
+    onSuccess () {
+      trpcContext.events.get.invalidate()
+    }
+  })
+
   if (isLoading || loadingDeleteAnimal || loadingEvents) {
     return <Loader/>
   }
@@ -78,6 +92,7 @@ const AnimalPage: NextPageWithLayout = () => {
     return <>Whoops...</>
   }
 
+  
 	return (
 		<div className="mt-12 flex flex-col flex-wrap items-center justify-center gap-8">
       
@@ -97,6 +112,8 @@ const AnimalPage: NextPageWithLayout = () => {
 
         const latestTime = latestEvent?.createdAt
         const now = new Date()
+
+        const canUndo = latestEvent && latestEvent.user.name === name && isBefore(new Date(), addMinutes(latestEvent.createdAt, 10)) 
         
 				return (
 					<div className='max-w-sm w-full'>
@@ -131,10 +148,13 @@ const AnimalPage: NextPageWithLayout = () => {
                   )
                 }) }
               </ul>
-              <div className='w-full flex justify-end'>
+              <div className='w-full flex justify-end gap-2'>
+                { canUndo &&
+                  <button onClick={() => deleteEvent({id: latestEvent.id})} className='text-gray-500'>undo</button>
+                }
                 <button 
                   onClick={() => captureEvent({ animalId: id, eventType: eventType.name })} 
-                  className={`active:scale-90 hover:scale-105 duration-300 ${(fetchingEvents || capturingEvent) && 'opacity-50'}`} 
+                  className={`active:scale-90 hover:scale-105 duration-300 ${(fetchingEvents || capturingEvent || undoingEvent) && 'opacity-50'}`} 
                 >
                   <svg className='x-12 h-12' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
                     <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM232 368V344 280H168 144V232h24 64V168 144h48v24 64h64 24v48H344 280v64 24H232z"/>

@@ -94,5 +94,21 @@ export const eventsRouter = router({
         userId: ctx.userId!
       }
     })
+  }),
+  delete: protectedProcedure.input(
+    z.object({
+      id: z.number(),
+    })
+  )
+  .mutation(async ({ctx, input}) => {
+    const {
+      id
+    } = input
+
+    await prisma.event.delete({
+      where: {
+        id
+      }
+    })
   })
 })
