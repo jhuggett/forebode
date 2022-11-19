@@ -92,9 +92,32 @@ export const accountRouter = router({
       }
     })
 
+    const accountLevelEventTypes = await prisma.eventType.findMany({
+      where: {
+        accountId: ctx.accountId,
+        isAccountLevel: true
+      },
+      include: {
+        events: {
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 1,
+          include: {
+            user: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
+    })
+
     return {
       animals,
-      relationships
+      relationships,
+      accountLevelEventTypes
     }
   })
 });

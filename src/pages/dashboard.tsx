@@ -117,9 +117,9 @@ const RelationshipSummary = ({ relationship } : { relationship: RelationshipSumm
 					<Link href={`/events/${largerType.id}`}>
 						<p className='font-mono font-bold hover:cursor-pointer'>{ largerType.name }</p>
 					</Link>
-					<p className=''>{ '>' }</p>
+					<p className='text-gray-500'>{ 'more than' }</p>
 					<Link href={`/events/${lesserType.id}`}>
-						<p className='font-mono font-bold hover:cursor-pointer'>{ lesserType.name }</p>
+						<p className='font-mono text-gray-500 font-bold hover:cursor-pointer'>{ lesserType.name }</p>
 					</Link>
 				</div>
 			</Card>
@@ -127,8 +127,36 @@ const RelationshipSummary = ({ relationship } : { relationship: RelationshipSumm
 	)
 }
 
+type AccountLevelEventTypeSummary = NonNullable<inferRouterOutputs<AppRouter>['account']['dashboard']['accountLevelEventTypes'][0]>
+const AccountLevelEventTypeSummary = ({ accountLevelEventType } : { accountLevelEventType: AccountLevelEventTypeSummary }) => {
+
+	const latestEvent = accountLevelEventType.events[0]
+
+	return (
+		<div className='w-full max-w-sm text-gray-600'>
+			<Card>
+				<Link href={`/events/${accountLevelEventType.id}`}>
+					<h3 className='text-lg text-center font-mono hover:cursor-pointer'>
+						{ accountLevelEventType.name }
+					</h3>
+				</Link>
+				{ latestEvent ? (
+					<div>
+						<div className='flex justify-around items-center'>
+							<EmphaticTimeSince lastDate={latestEvent.createdAt} />
+						</div>
+						<p className='font-thin text-center'>{ latestEvent.user.name }</p>
+					</div>
+				) : (
+					<p>Hasn't happened yet.</p>
+				) }
+			</Card>
+		</div>
+	)
+}
+
 export const Card = ({ children }) => 
-	<div className='bg-gray-200 p-8 shadow-xl rounded-2xl h-fit'>
+	<div className='bg-gray-200 p-10 shadow-xl rounded-2xl h-fit'>
 		{ children }
 	</div>
 
@@ -149,13 +177,16 @@ const DashboardPage: NextPageWithLayout = () => {
 	
 
 	return (
-		<div className="mt-12 flex flex-wrap items-center justify-center gap-8">
-			<div className='w-full px-4 justify-center flex flex-wrap gap-4'>
+		<div className="mt-12 flex flex-wrap items-center justify-center gap-8 ">
+			<div className='w-full px-4 justify-center flex flex-wrap gap-4 max-w-6xl'>
 				{ dashboard.relationships.map(relationship => (
-					<RelationshipSummary relationship={relationship} />
+					<RelationshipSummary key={`relationship-${relationship.id}`} relationship={relationship} />
 				)) }
 				{ dashboard.animals.filter(animal => animal.events.length > 0).map(animal => {
 					return <AnimalSummary key={animal.name} animal={animal} />
+				}) }
+				{ dashboard.accountLevelEventTypes.map(accountLevelEventType => {
+					return <AccountLevelEventTypeSummary key={accountLevelEventType.name} accountLevelEventType={accountLevelEventType} />
 				}) }
 			</div>
 		</div>
