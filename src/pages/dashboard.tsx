@@ -92,7 +92,7 @@ const RelationshipSummary = ({ relationship } : { relationship: RelationshipSumm
 		return (
 			<div className='w-full max-w-sm'>
 				<Card>
-					<p className='flex flex-col items-center gap-2 p-2 text-gray-500'>
+					<p className='flex flex-col items-center p-2 text-gray-500'>
 						Same number of 
 						<Link href={`/events/${largerType.id}`}>
 							<p className='font-mono font-bold hover:cursor-pointer'>{ largerType.name }</p>
@@ -112,12 +112,12 @@ const RelationshipSummary = ({ relationship } : { relationship: RelationshipSumm
 	return (
 		<div className='w-full max-w-sm'>
 			<Card>
-				<div className='flex flex-col items-center gap-2'>
+				<div className='flex flex-col items-center gap-1'>
 					<p className='text-4xl font-semibold'>{ difference }</p>
 					<Link href={`/events/${largerType.id}`}>
 						<p className='font-mono font-bold hover:cursor-pointer'>{ largerType.name }</p>
 					</Link>
-					<p className='font-light py-4 text-sm'>more than</p>
+					<p className=''>{ '>' }</p>
 					<Link href={`/events/${lesserType.id}`}>
 						<p className='font-mono font-bold hover:cursor-pointer'>{ lesserType.name }</p>
 					</Link>
@@ -151,12 +151,12 @@ const DashboardPage: NextPageWithLayout = () => {
 	return (
 		<div className="mt-12 flex flex-wrap items-center justify-center gap-8">
 			<div className='w-full px-4 justify-center flex flex-wrap gap-4'>
-					{ dashboard.animals.filter(animal => animal.events.length > 0).map(animal => {
-						return <AnimalSummary key={animal.name} animal={animal} />
-					}) }
-					{ dashboard.relationships.map(relationship => (
-						<RelationshipSummary relationship={relationship} />
-					)) }
+				{ dashboard.relationships.map(relationship => (
+					<RelationshipSummary relationship={relationship} />
+				)) }
+				{ dashboard.animals.filter(animal => animal.events.length > 0).map(animal => {
+					return <AnimalSummary key={animal.name} animal={animal} />
+				}) }
 			</div>
 		</div>
   );
