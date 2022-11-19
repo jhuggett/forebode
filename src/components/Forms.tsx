@@ -1,5 +1,40 @@
 import { UseFormReturn, Path, FieldValues } from "react-hook-form"
 
+export const Checkbox = <T extends FieldValues,>({ 
+  form,
+  name,
+  label,
+  alreadyChecked,
+  required 
+} : { 
+  form: UseFormReturn<T>
+  name: keyof T
+  label: string
+  alreadyChecked?: boolean
+  required?: boolean 
+}) => {
+  return (
+    <div className="flex justify-between gap-1">
+      <label
+        htmlFor={name as string}
+        className="text-gray-600 text-sm pl-2" 
+      >
+        { label } { required && '*' }
+      </label>
+      <input
+        type="checkbox"
+        id={name as string}
+        checked={alreadyChecked}
+        className=""
+        {...form.register(name as Path<T>, { 
+          required
+        })}
+      />
+      
+    </div>
+  )
+}
+
 export const Text = <T extends FieldValues,>({ 
   form,
   name,

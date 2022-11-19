@@ -19,7 +19,12 @@ const NavLink = ({ href, children } : { href: string, children: ReactNode }) => 
 
   const router = useRouter()
 
-  const active = router.pathname.includes(href)
+  console.log({
+    p: router.pathname.split('/')
+  });
+  
+
+  const active = router.pathname.split('/')[1]?.includes(href.slice(1))
 
   return (
     <Link href={ href }>
@@ -47,7 +52,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <div className='flex justify-center items-center mx-4 text-xl font-bold'>
             Forebode
           </div>
-          <div className='flex justify-center items-center w-full gap-4'>
+          <div className='flex flex-wrap justify-center items-center w-full gap-4'>
             <NavLink href={'/dashboard'}>
               Dashboard
             </NavLink>
