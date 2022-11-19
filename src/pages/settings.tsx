@@ -25,7 +25,7 @@ const SettingsPage: NextPageWithLayout = () => {
 	}
 
 	if (!account) {
-		return <>Whoops.</>
+		return <>Whoops. <SignOutButton /></>
 	}
 
 	return (

@@ -1,6 +1,7 @@
 import { prisma } from "~/server/prisma";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from "../trpc";
+import { sub } from "date-fns";
 
 export const accountRouter = router({
   current: protectedProcedure.query(async ({ ctx }) => {
@@ -26,13 +27,24 @@ export const accountRouter = router({
       })
     }
 
-    const summary = await prisma.animal.findMany({
+    return {
+      id: account.id,
+      name: account.name,
+      animals: account.animals.map(animal => ({
+        name: animal.name,
+        id: animal.id
+      })),
+    }
+  }),
+  dashboard: protectedProcedure.query(async ({ ctx }) => {
+
+    const animals = await prisma.animal.findMany({
       where: {
-        accountId: account.id,
+        accountId: ctx.accountId,
       },
       include: {
         events: {
-          distinct: 'eventTypeName',
+          distinct: 'eventTypeId',
           orderBy: {
             createdAt: 'desc'
           },
@@ -52,14 +64,37 @@ export const accountRouter = router({
       }
     })
 
+    const relationships = await prisma.eventTypeRelationship.findMany({
+      where: {
+        eventTypes: {
+          every: {
+            accountId: ctx.accountId
+          }
+        }
+      },
+      include: {
+        eventTypes: {
+          include: {
+            _count: {
+              select: {
+                events: {
+                  where: {
+                    createdAt: {
+                      gte: sub(new Date(), { days: 7 })
+                    }
+                  }
+                },
+              },
+
+            }
+          }
+        }
+      }
+    })
+
     return {
-      id: account.id,
-      name: account.name,
-      animals: account.animals.map(animal => ({
-        name: animal.name,
-        id: animal.id
-      })),
-      summary
+      animals,
+      relationships
     }
-  }),
+  })
 });

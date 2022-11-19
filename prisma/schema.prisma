@@ -3,7 +3,7 @@
 
 generator client {
   provider        = "prisma-client-js"
-  previewFeatures = ["referentialIntegrity"]
+  previewFeatures = ["referentialIntegrity", "filteredRelationCount"]
 }
 
 datasource db {
@@ -33,9 +33,10 @@ model Account {
 
   name String @db.VarChar(255)
 
-  users   User[]
-  animals Animal[]
-  Event   Event[]
+  users      User[]
+  animals    Animal[]
+  events     Event[]
+  eventTypes EventType[]
 }
 
 model Animal {
@@ -67,8 +68,8 @@ model Event {
   user   User @relation(fields: [userId], references: [id])
   userId Int
 
-  type          EventType @relation(fields: [eventTypeName], references: [name])
-  eventTypeName String    @db.VarChar(255)
+  type        EventType @relation(fields: [eventTypeId], references: [id])
+  eventTypeId Int
 }
 
 model EventType {
@@ -76,8 +77,28 @@ model EventType {
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  name  String  @unique @db.VarChar(255)
-  Event Event[]
+  name String @db.VarChar(255)
+
+  isAccountLevel Boolean @default(false)
+
+  events Event[]
 
   animals Animal[]
+
+  relationships EventTypeRelationship[]
+
+  account   Account @relation(fields: [accountId], references: [id])
+  accountId Int
+}
+
+model EventTypeRelationship {
+  id Int @id @default(autoincrement())
+
+  eventTypes EventType[]
+
+  relationshipType EventTypeRelationshipType
+}
+
+enum EventTypeRelationshipType {
+  DIFFERENCE
 }

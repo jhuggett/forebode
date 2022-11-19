@@ -9,16 +9,6 @@ export type EventInfo = Event & {
   user: User;
 }
 
-const sortEvents = (events: EventInfo[], eventMap: Map<string, EventInfo[]>) => {
-  for (const event of events) {
-    if (!eventMap.has(event.eventTypeName)) {
-      eventMap.set(event.eventTypeName, [event])
-    } else {
-      eventMap.get(event.eventTypeName)!.push(event)
-    }
-  }
-}
-
 export const eventsRouter = router({
   get: protectedProcedure.input(
     z.object({
@@ -30,67 +20,38 @@ export const eventsRouter = router({
     const { animalId } = input
     const { accountId } = ctx
 
-    const eventMap = new Map<string, EventInfo[]>()
+    const events = await prisma.event.findMany({
+      where: {
+        animalId
+      },
+      orderBy: {
+        createdAt: 'desc'
+      },
+      include: {
+        user: true
+      },
+      take: 10
+    })
 
-    if (!animalId) {
-      // get events for account
-
-      if (!accountId) {
-        throw new TRPCError({
-          code: "BAD_REQUEST"
-        })
-      }
-
-      const events = await prisma.event.findMany({
-        where: {
-          accountId
-        },
-        include: {
-          user: true
-        },
-        orderBy: {
-          createdAt: 'desc'
-        },
-        take: 10
-      })
-
-      sortEvents(events, eventMap)
-    } else {
-      const events = await prisma.event.findMany({
-        where: {
-          animalId
-        },
-        orderBy: {
-          createdAt: 'desc'
-        },
-        include: {
-          user: true
-        },
-        take: 10
-      })
-
-      sortEvents(events, eventMap)
-    }
-
-    return Array.from(eventMap.entries())
+    return events
   }),
   capture: protectedProcedure.input(
     z.object({
       animalId: z.number().optional(),
-      eventType: z.string()
+      eventTypeId: z.number()
     })
   )
   .mutation(async ({ctx, input}) => {
     const {
       animalId,
-      eventType
+      eventTypeId
     } = input
 
     await prisma.event.create({
       data: {
         accountId: !animalId ? ctx.accountId! : null,
         animalId: animalId ? animalId : null,
-        eventTypeName: eventType,
+        eventTypeId: eventTypeId,
         userId: ctx.userId!
       }
     })

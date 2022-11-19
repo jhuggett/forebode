@@ -2,7 +2,6 @@ import { prisma } from "~/server/prisma";
 import { protectedProcedure, router } from "../trpc";
 import { z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { AllEventTypes } from "../events";
 
 export const animalRouter = router({
   create: protectedProcedure.input(
@@ -21,9 +20,6 @@ export const animalRouter = router({
       data: {
         name,
         accountId: ctx.accountId!,
-        eventTypes: {
-          connect: AllEventTypes.map(e => ({ name: e.name }))
-        }
       }
     })
 
@@ -45,9 +41,6 @@ export const animalRouter = router({
     const animal = await prisma.animal.findFirst({
       where: {
         id
-      },
-      include: {
-        eventTypes: true
       }
     })
 
@@ -58,8 +51,7 @@ export const animalRouter = router({
     }
 
     return {
-      name: animal.name,
-      eventTypes: animal.eventTypes
+      name: animal.name
     }
   }),
   delete: protectedProcedure.input(
@@ -84,4 +76,102 @@ export const animalRouter = router({
       }
     })
   }),
+  eventTypes: protectedProcedure.input(
+    z.object({
+      id: z.number()
+    })
+  )
+  .query(async ({ctx, input}) => {
+
+    let availibleTypes = await prisma.eventType.findMany({
+      where: {
+        accountId: ctx.accountId,
+        isAccountLevel: false
+      }
+    })
+
+    const typesInUse = await prisma.animal.findUnique({
+      where: {
+        id: input.id
+      },
+      include: {
+        eventTypes: true
+      }
+    })
+
+    const namesToOmit = typesInUse?.eventTypes.map(t => t.name) || []
+    availibleTypes = availibleTypes.filter(t => !namesToOmit.includes(t.name))
+
+    return {
+      tracked: typesInUse?.eventTypes,
+      availible: availibleTypes
+    }
+
+  }),
+  track: protectedProcedure.input(z.object({
+    animalId: z.number(),
+    eventId: z.number()
+  })).mutation(async ({input, ctx}) => {
+    await prisma.animal.update({
+      where: {
+        id: input.animalId
+      },
+      data: {
+        eventTypes: {
+          connect: {
+            id: input.eventId
+          }
+        }
+      }
+    })
+  }),
+  untrack: protectedProcedure.input(z.object({
+    animalId: z.number(),
+    eventId: z.number()
+  })).mutation(async ({input, ctx}) => {
+    await prisma.animal.update({
+      where: {
+        id: input.animalId
+      },
+      data: {
+        eventTypes: {
+          disconnect: {
+            id: input.eventId
+          }
+        }
+      }
+    })
+  }),
+  latestEvents: protectedProcedure.input(z.object({
+    animalId: z.number()
+  })).query(async ({ ctx, input }) => {
+    return await prisma.eventType.findMany({
+      where: {
+        animals: {
+          some: {
+            id: input.animalId
+          }
+        }
+      },
+      include: {
+        events: {
+          where: {
+            animalId: input.animalId
+          },
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 10,
+          include: {
+            user: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
+    })
+  })
+
 });
