@@ -1,6 +1,7 @@
 import { inferRouterOutputs } from '@trpc/server';
 import { formatDistanceToNow, formatDuration, intervalToDuration } from 'date-fns';
 import Link from 'next/link';
+import { Children, ReactNode } from 'react';
 import { getDashboardLayout } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
 import { AppRouter } from '~/server/routers/_app';
@@ -38,9 +39,9 @@ const AnimalSummary = ({ animal } : { animal: AnimalSummary}) => {
 			<Card>
 				<div className=' text-gray-600'>
 					<p className='text-center font-bold font-serif text-2xl pb-4'>
-					<Link href={`/animals/${animal.id}`}>
+					<CardLink to={`/animals/${animal.id}`} title={`View animal ${animal.name}`} >
 						{animal.name}
-					</Link>
+					</CardLink>
 					</p>
 					<div className='w-full flex flex-wrap gap-2 justify-evenly items-center'>
 						{animal.events.sort((a, b) => a.type.name > b.type.name ? 1 : -1).map(event => {
@@ -135,11 +136,11 @@ const AccountLevelEventTypeSummary = ({ accountLevelEventType } : { accountLevel
 	return (
 		<div className='w-full max-w-sm text-gray-600'>
 			<Card>
-				<Link href={`/events/${accountLevelEventType.id}`}>
+				<CardLink to={`/events/${accountLevelEventType.id}`} title={`View event ${accountLevelEventType.name}`} >
 					<h3 className='text-lg text-center font-mono hover:cursor-pointer'>
 						{ accountLevelEventType.name }
 					</h3>
-				</Link>
+				</CardLink>
 				{ latestEvent ? (
 					<div>
 						<div className='flex justify-around items-center'>
@@ -155,8 +156,19 @@ const AccountLevelEventTypeSummary = ({ accountLevelEventType } : { accountLevel
 	)
 }
 
+
+export const CardLink = ({ to, title, children }: { to: string, title: string, children: ReactNode }) => {
+	return (
+		<Link href={ to }>
+			<a title={title} className='after:absolute after:content-[""] after:left-0 after:top-0 after:right-0 after:bottom-0'>
+				{ children }
+			</a>
+		</Link>
+	)
+}
+
 export const Card = ({ children }) => 
-	<div className='bg-gray-200 p-10 shadow-xl rounded-2xl h-fit'>
+	<div className='bg-gray-200 p-10 shadow-xl rounded-2xl h-fit relative card'>
 		{ children }
 	</div>
 

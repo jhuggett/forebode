@@ -2,14 +2,14 @@ import Link from 'next/link'
 import { getDashboardLayout } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
-import { Card } from '../dashboard';
+import { Card, CardLink } from '../dashboard';
 import { NextPageWithLayout } from '../_app';
 
 const AddAnAnimal = () => 
-  <div className='p-8 rounded-xl border-gray-500 border-2 border-dashed'>
-    <Link href={'/animals/add'}>
+  <div className='p-8 rounded-xl border-gray-500 border-2 border-dashed relative'>
+    <CardLink to='/animals/add' title='Add an animal'>
       Add an animal
-    </Link>
+    </CardLink>
   </div>
 
 
@@ -36,9 +36,9 @@ const AnimalsPage: NextPageWithLayout = () => {
 		<div className="mt-12 flex flex-wrap items-center justify-center gap-8">
 			{ animals.map(animal => (
         <Card key={`card-${animal.name}`}>
-          <Link href={`/animals/${animal.id}`}>
+          <CardLink to={`/animals/${animal.id}`} title={`View ${animal.name}`} >
             { animal.name }
-          </Link>
+          </CardLink>
         </Card>
       )) }
       <AddAnAnimal />

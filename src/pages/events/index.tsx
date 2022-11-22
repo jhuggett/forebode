@@ -2,15 +2,15 @@ import Link from 'next/link';
 import { getDashboardLayout, SignOutButton } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
-import { Card } from '../dashboard';
-import { NextPageWithLayout, useAuth } from '../_app';
+import { Card, CardLink } from '../dashboard';
+import { NextPageWithLayout } from '../_app';
 
 
 const AddEventTypeButton = () => (
-  <div className='p-8 rounded-xl border-gray-500 border-2 border-dashed'>
-    <Link href={'/events/add'}>
+  <div className='p-8 rounded-xl border-gray-500 border-2 border-dashed relative'>
+    <CardLink to='/events/add' title='Add a new event'>
       Add a new event
-    </Link>
+    </CardLink>
   </div>
 )
 
@@ -30,9 +30,9 @@ const EventsPage: NextPageWithLayout = () => {
 				{ eventTypes?.map( event => {
           return (
             <Card>
-              <Link href={`/events/${event.id}`}>
+              <CardLink to={`/events/${event.id}`} title={`View ${event.name}`}>
                 { event.name }
-              </Link>
+              </CardLink>
             </Card>
           )
         } ) }
