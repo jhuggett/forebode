@@ -178,7 +178,7 @@ const Graphs = ({ info } : { info: EventTypeInfo }) => {
       <Card>
         <h4 className='text-center font-medium '>Who did what?</h4>
         <VictoryPie
-          data={info.graph_data.map(data => ({
+          data={info.graph_data.filter(data => data._count.Event > 0).map(data => ({
             x: data.name,
             y: data._count.Event
           }))}
