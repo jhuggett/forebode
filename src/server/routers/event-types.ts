@@ -57,7 +57,7 @@ export const eventTypesRouter = router({
           select: {
             Event: {
               where: {
-                id: input.eventTypeId
+                eventTypeId: input.eventTypeId
               }
             }
           }
