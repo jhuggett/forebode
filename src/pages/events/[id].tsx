@@ -5,6 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { VictoryPie } from 'victory';
 import { getDashboardLayout, SignOutButton } from '~/components/DashboardLayout';
 import { Checkbox, SubmitButton, Text } from '~/components/Forms';
 import { Loader } from '~/components/Loader';
@@ -169,6 +170,24 @@ const RelationshipCard = ({ info } : { info: EventTypeInfo } ) => {
   )
 }
 
+const Graphs = ({ info } : { info: EventTypeInfo }) => {
+  
+
+  return (
+    <div className='w-full max-w-sm'>
+      <Card>
+        <h4 className='text-center font-medium '>Who did what?</h4>
+        <VictoryPie
+          data={info.graph_data.map(data => ({
+            x: data.name,
+            y: data._count.Event
+          }))}
+        />
+      </Card>
+    </div>
+  )
+}
+
 type EventTypeInfo = NonNullable<inferRouterOutputs<AppRouter>['eventTypes']['get']>
 
 const EventPage: NextPageWithLayout = () => {
@@ -192,9 +211,10 @@ const EventPage: NextPageWithLayout = () => {
       <h2 className='text-2xl font-mono text-gray-600'>
         { data?.name }
       </h2>
-      <div className='flex w-full flex-col items-center flex-wrap gap-4'>
+      <div className='flex w-full max-w-7xl justify-center items-center flex-wrap gap-4'>
         { data.isAccountLevel ? <AccountLevelEventCard info={data} /> : <AnimalLevelEventCard info={data} /> }
         
+        <Graphs info={data} />
         <RelationshipCard info={data} />
       </div>
 		</div>

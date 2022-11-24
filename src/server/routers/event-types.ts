@@ -17,7 +17,7 @@ export const eventTypesRouter = router({
     eventTypeId: z.number()
   })).query(async ({ ctx, input }) => {
 
-    return await prisma.eventType.findUnique({
+    const eventInfo = await prisma.eventType.findUnique({
       where: {
         id: input.eventTypeId
       },
@@ -44,9 +44,36 @@ export const eventTypesRouter = router({
           include: {
             user: true
           }
+        },
+      }
+    })
+
+    const userGraphInfo = await prisma.user.findMany({
+      where: {
+        accountId: ctx.accountId
+      },
+      include: {
+        _count: {
+          select: {
+            Event: {
+              where: {
+                id: input.eventTypeId
+              }
+            }
+          }
         }
       }
     })
+
+    if (!eventInfo || !userGraphInfo) throw new TRPCError({ code: "NOT_FOUND" })
+
+    return {
+      ...eventInfo,
+      graph_data: userGraphInfo.map(data => ({
+        name: data.name,
+        _count: data._count
+      }))
+    }
   }),
   relate: protectedProcedure.input(z.object({
     eventTypeAId: z.number(),

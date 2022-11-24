@@ -45,6 +45,7 @@
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.39.1",
     "superjson": "^1.7.4",
+    "victory": "^36.6.8",
     "ws": "^8.11.0",
     "zod": "^3.0.0"
   },

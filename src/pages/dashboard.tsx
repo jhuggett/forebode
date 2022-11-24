@@ -175,7 +175,8 @@ export const Card = ({ children }) =>
 const DashboardPage: NextPageWithLayout = () => {
 	const {
 		data: dashboard,
-		isLoading: loadingAccount
+		isLoading: loadingAccount,
+		error
 	} = trpc.account.dashboard.useQuery()
 
 
