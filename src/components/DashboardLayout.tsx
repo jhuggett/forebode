@@ -50,11 +50,11 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
       </Head>
 
       <main>
-        <div className='w-full mt-4 flex flex-col lg:flex-row lg:py-2 px-4  justify-between'>
-          <div className='flex justify-center items-center mx-4 text-xl font-bold'>
+        <div className='relative w-full mt-4 flex flex-col lg:flex-row lg:py-2 px-4  justify-center'>
+          <div className='flex justify-center items-center mx-4 text-xl font-bold lg:absolute lg:left-2'>
             Forebode
           </div>
-          <div className='flex flex-wrap justify-center items-center gap-4 lg:shadow-xl lg:w-fit lg:bg-gray-200 lg:px-4 lg:py-2 rounded-xl'>
+          <div className='flex flex-wrap justify-center items-center gap-4 lg:shadow-xl lg:bg-gray-200 lg:px-4 lg:py-2 rounded-xl'>
             <NavLink href={'/dashboard'}>
               Dashboard
             </NavLink>
@@ -68,7 +68,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
               Settings
             </NavLink>
           </div>
-          <div className='hidden lg:flex justify-center items-center gap-4'>
+          <div className='hidden lg:flex justify-center items-center gap-4 absolute right-4'>
             <p className='text-sm'>{ email }</p>
             <SignOutButton />
           </div>

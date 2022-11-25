@@ -172,6 +172,18 @@ export const Card = ({ children }) =>
 		{ children }
 	</div>
 
+const Divider = ({ children } : { children: ReactNode }) => {
+
+
+	return (
+		<div className="relative flex py-5 items-center">
+			<div className="flex-grow border-t border-gray-400"></div>
+			<span className="flex-shrink mx-4 text-gray-400">{ children }</span>
+			<div className="flex-grow border-t border-gray-400"></div>
+	</div>
+	)
+}
+
 const DashboardPage: NextPageWithLayout = () => {
 	const {
 		data: dashboard,
@@ -190,14 +202,20 @@ const DashboardPage: NextPageWithLayout = () => {
 	
 
 	return (
-		<div className="mt-12 flex flex-wrap items-center justify-center gap-8 ">
+		<div className="mt-12 flex flex-col m-auto w-full max-w-6xl justify-center gap-8 ">
 			<div className='w-full px-4 justify-center flex flex-wrap gap-4 max-w-6xl'>
 				{ dashboard.relationships.map(relationship => (
 					<RelationshipSummary key={`relationship-${relationship.id}`} relationship={relationship} />
 				)) }
+			</div>
+			<Divider>Animals</Divider>
+			<div className='w-full px-4 justify-center flex flex-wrap gap-4 max-w-6xl'>
 				{ dashboard.animals.filter(animal => animal.events.length > 0).map(animal => {
 					return <AnimalSummary key={animal.name} animal={animal} />
 				}) }
+			</div>
+			<Divider>Household events</Divider>
+			<div className='w-full px-4 justify-center flex flex-wrap gap-4 max-w-6xl'>
 				{ dashboard.accountLevelEventTypes.map(accountLevelEventType => {
 					return <AccountLevelEventTypeSummary key={accountLevelEventType.name} accountLevelEventType={accountLevelEventType} />
 				}) }
