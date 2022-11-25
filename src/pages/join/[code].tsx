@@ -1,19 +1,18 @@
 import { useForm } from 'react-hook-form';
 import { trpc } from '~/utils/trpc';
-import { NextPageWithLayout } from './_app';
 import { signIn, useSession } from "next-auth/react"
 import { useRouter } from 'next/router';
 import { Loader } from '~/components/Loader';
 import { Email, Password, Text, SubmitButton } from '~/components/Forms';
+import { NextPageWithLayout } from '../_app';
 
 type FormData = {
   email: string,
   userName: string,
-  accountName: string,
-  password: string,
+  password: string
 }
 
-const SignupPage: NextPageWithLayout = () => {
+const JoinAccountPage: NextPageWithLayout = () => {
   const form = useForm<FormData>()
   const {
     register,
@@ -23,10 +22,13 @@ const SignupPage: NextPageWithLayout = () => {
     }
   } = form
 
+  const router = useRouter()
+  const code = router.query.code as string
+
   const {
     mutate,
     isLoading
-  } = trpc.user.signup.useMutation({
+  } = trpc.user.join.useMutation({
     onSuccess: (_data, variables) => signIn('credentials', {
       email: variables.email,
       password: variables.password,
@@ -37,21 +39,18 @@ const SignupPage: NextPageWithLayout = () => {
   const onSubmit = ({
     email,
     userName,
-    accountName,
-    password,
+    password
   } : FormData) => mutate({
     email,
     userName,
-    accountName,
     password,
+    code
   })
 
   const {
     data,
     status
   } = useSession()
-
-  const router = useRouter()
     
 
   if (status === 'loading' || isLoading) {
@@ -70,7 +69,6 @@ const SignupPage: NextPageWithLayout = () => {
         <Text form={form} label='Name' name='userName' placeholder='John' required />
         <Email form={form} required />
         <Password form={form} required />
-        <Text form={form} label='Household name' name='accountName' placeholder='The Smiths' required />
         <SubmitButton />
       </form>
     </div>
@@ -79,4 +77,4 @@ const SignupPage: NextPageWithLayout = () => {
 
 
 
-export default SignupPage;
+export default JoinAccountPage;

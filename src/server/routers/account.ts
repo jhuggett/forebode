@@ -2,6 +2,7 @@ import { prisma } from "~/server/prisma";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from "../trpc";
 import { sub } from "date-fns";
+import { JoiningCode } from "./user";
 
 export const accountRouter = router({
   current: protectedProcedure.query(async ({ ctx }) => {
@@ -27,6 +28,8 @@ export const accountRouter = router({
       })
     }
 
+    const joiningCode = new JoiningCode(ctx.session.user?.name!, account.id)
+
     return {
       id: account.id,
       name: account.name,
@@ -34,10 +37,10 @@ export const accountRouter = router({
         name: animal.name,
         id: animal.id
       })),
+      joiningCode: joiningCode.toString()
     }
   }),
   dashboard: protectedProcedure.query(async ({ ctx }) => {
-
     const animals = await prisma.animal.findMany({
       where: {
         accountId: ctx.accountId,
