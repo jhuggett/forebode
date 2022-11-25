@@ -95,48 +95,7 @@ const EventTypeCard = ({ eventType, animalId, name } : {
             </svg>
           </button>
         </div>
-        <Graphs info={eventType} />
       </Card>
-    </div>
-  )
-}
-
-const Graphs = ({ info } : { info: EventInfo }) => {
-
-  const events = useMemo(() => {
-    let items: {}[] = []
-
-    let existingInfo = Array.from(info.events)
-
-    console.log({
-      e: info.events
-    });
-    
-
-    let i = 0
-    let previous: EventInfo['events'][0] | null = null
-    for (const item of existingInfo.reverse()) {
-      if (previous) {
-        items.push({
-          x: i,
-          y: (item.createdAt.valueOf() - previous.createdAt.valueOf()) / 1000 / 60 / 60,
-        })
-      }
-      previous = item
-      i++
-    }
-
-    return items
-  }, [info])
-
-  return (
-    <div className='text-center mt-8 font-semibold'>
-      <h4>Hours between each event:</h4>
-      <VictoryChart theme={VictoryTheme.material}>
-        <VictoryBar
-          data={events}
-        />
-      </VictoryChart>
     </div>
   )
 }
