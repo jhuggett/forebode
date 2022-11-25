@@ -18,13 +18,13 @@ export const EmphaticTimeSince = ({ lastDate } : { lastDate: Date }) => {
 	Should also handle weeks, months, and years in the future
 	*/
 
-	if (durationSince.days) return <p className='italic text-2xl text-center font-bold py-1 text-gray-900'>
+	if (durationSince.days) return <p className='italic text-2xl text-center font-bold text-gray-900'>
 		{`${durationSince.days}d ${durationSince.hours}h`}
 	</p>
-	if (durationSince.hours) return <p className='italic text-xl text-center font-semibold py-1 text-gray-800'>
+	if (durationSince.hours) return <p className='italic text-xl text-center font-semibold text-gray-800'>
 		{`${durationSince.hours}h ${durationSince.minutes}m`}
 	</p>
-		if (durationSince.minutes) return <p className='italic text-lg text-center font-medium py-1 text-gray-700'>
+		if (durationSince.minutes) return <p className='italic text-lg text-center font-medium text-gray-700'>
 			{`${durationSince.minutes}m ${durationSince.seconds}s`}
 		</p>
 		return <p className='italic text-md text-center py-1 text-gray-600'>
@@ -35,24 +35,24 @@ export const EmphaticTimeSince = ({ lastDate } : { lastDate: Date }) => {
 type AnimalSummary = NonNullable<inferRouterOutputs<AppRouter>['account']['dashboard']['animals'][0]>
 const AnimalSummary = ({ animal } : { animal: AnimalSummary}) => {
 	return (
-		<div>
+		<div className=''>
 			<Card>
 				<div className=' text-gray-600'>
-					<p className='text-center font-bold font-serif text-2xl pb-4'>
+					<p className='text-center font-semibold text-lg pb-2'>
 					<CardLink to={`/animals/${animal.id}`} title={`View animal ${animal.name}`} >
 						{animal.name}
 					</CardLink>
 					</p>
-					<div className='w-full flex flex-wrap gap-2 justify-evenly items-center'>
+					<div className='w-full flex flex-wrap gap-2 justify-evenly items-center divide-gray-300'>
 						{animal.events.sort((a, b) => a.type.name > b.type.name ? 1 : -1).map(event => {
 
 							const latestEvent = event
 							const eventType = event.type
 
 							return (
-								<div className='px-4'>
-									<p className='text-sm text-center font-mono'>
-									{ eventType.name }
+								<div className='px-2'>
+									<p className='text-sm text-center '>
+									Last { eventType.name }
 									</p>
 									{ latestEvent && (
 										<div className='flex justify-around items-center'>
@@ -91,7 +91,7 @@ const RelationshipSummary = ({ relationship } : { relationship: RelationshipSumm
 		lesserType = firstType
 	} else if (secondType._count.events === firstType._count.events) {
 		return (
-			<div className='w-full max-w-sm'>
+			<div className='w-fit'>
 				<Card>
 					<p className='flex flex-col items-center p-2 text-gray-500'>
 						Same number of 
@@ -111,17 +111,19 @@ const RelationshipSummary = ({ relationship } : { relationship: RelationshipSumm
 	const difference = largerType._count.events - lesserType._count.events
 
 	return (
-		<div className='w-full max-w-sm'>
+		<div className='w-fit'>
 			<Card>
 				<div className='flex flex-col items-center gap-1'>
 					<p className='text-4xl font-semibold'>{ difference }</p>
-					<Link href={`/events/${largerType.id}`}>
-						<p className='font-mono font-bold hover:cursor-pointer'>{ largerType.name }</p>
-					</Link>
-					<p className='text-gray-500'>{ 'more than' }</p>
-					<Link href={`/events/${lesserType.id}`}>
-						<p className='font-mono text-gray-500 font-bold hover:cursor-pointer'>{ lesserType.name }</p>
-					</Link>
+					<div className='flex gap-2 items-center'>
+						<Link href={`/events/${largerType.id}`}>
+							<p className='font-bold hover:cursor-pointer'>{ largerType.name }</p>
+						</Link>
+						<p className='text-gray-500 font-bold text-xl'>{ '>' }</p>
+						<Link href={`/events/${lesserType.id}`}>
+							<p className='text-gray-500 font-bold hover:cursor-pointer'>{ lesserType.name }</p>
+						</Link>
+					</div>
 				</div>
 			</Card>
 		</div>
@@ -134,11 +136,11 @@ const AccountLevelEventTypeSummary = ({ accountLevelEventType } : { accountLevel
 	const latestEvent = accountLevelEventType.events[0]
 
 	return (
-		<div className='w-full max-w-sm text-gray-600'>
+		<div className=' text-gray-600'>
 			<Card>
 				<CardLink to={`/events/${accountLevelEventType.id}`} title={`View event ${accountLevelEventType.name}`} >
-					<h3 className='text-lg text-center font-mono hover:cursor-pointer'>
-						{ accountLevelEventType.name }
+					<h3 className='text-lg text-center hover:cursor-pointer'>
+						Last { accountLevelEventType.name }
 					</h3>
 				</CardLink>
 				{ latestEvent ? (
@@ -146,7 +148,7 @@ const AccountLevelEventTypeSummary = ({ accountLevelEventType } : { accountLevel
 						<div className='flex justify-around items-center'>
 							<EmphaticTimeSince lastDate={latestEvent.createdAt} />
 						</div>
-						<p className='font-thin text-center'>{ latestEvent.user.name }</p>
+						<p className='font-thin text-sm text-center'>{ latestEvent.user.name }</p>
 					</div>
 				) : (
 					<p>Hasn't happened yet.</p>
@@ -168,7 +170,7 @@ export const CardLink = ({ to, title, children }: { to: string, title: string, c
 }
 
 export const Card = ({ children }) => 
-	<div className='bg-gray-200 p-10 shadow-xl rounded-2xl h-fit relative card'>
+	<div className='bg-gray-200 p-8 shadow-xl rounded-2xl h-fit relative card'>
 		{ children }
 	</div>
 
