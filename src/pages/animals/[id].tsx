@@ -6,17 +6,15 @@ import { trpc } from '~/utils/trpc';
 import { Card } from '../dashboard';
 import { NextPageWithLayout, useAuth } from '../_app';
 import { Event, EventType } from 'prisma/prisma-client'
-import { addMinutes, formatDistanceToNow, formatRelative, isBefore } from 'date-fns';
+import { addMinutes, formatDistanceStrict, formatDistanceToNow, formatRelative, isBefore } from 'date-fns';
+import { VictoryBar, VictoryChart, VictoryLine, VictoryTheme } from 'victory';
+import { inferRouterOutputs } from '@trpc/server';
+import { AppRouter } from '~/server/routers/_app';
+import { useMemo } from 'react';
 
 
 const EventTypeCard = ({ eventType, animalId, name } : {
-  eventType: (EventType & {
-      events: (Event & {
-          user: {
-              name: string;
-          };
-      })[];
-  }),
+  eventType: EventInfo
   animalId: number,
   name: string
 }) => {
@@ -97,10 +95,53 @@ const EventTypeCard = ({ eventType, animalId, name } : {
             </svg>
           </button>
         </div>
+        <Graphs info={eventType} />
       </Card>
     </div>
   )
 }
+
+const Graphs = ({ info } : { info: EventInfo }) => {
+
+  const events = useMemo(() => {
+    let items: {}[] = []
+
+    let existingInfo = Array.from(info.events)
+
+    console.log({
+      e: info.events
+    });
+    
+
+    let i = 0
+    let previous: EventInfo['events'][0] | null = null
+    for (const item of existingInfo.reverse()) {
+      if (previous) {
+        items.push({
+          x: i,
+          y: (item.createdAt.valueOf() - previous.createdAt.valueOf()) / 1000 / 60 / 60,
+        })
+      }
+      previous = item
+      i++
+    }
+
+    return items
+  }, [info])
+
+  return (
+    <div className='text-center mt-8 font-semibold'>
+      <h4>Hours between each event:</h4>
+      <VictoryChart theme={VictoryTheme.material}>
+        <VictoryBar
+          data={events}
+        />
+      </VictoryChart>
+    </div>
+  )
+}
+
+type EventInfo = NonNullable<inferRouterOutputs<AppRouter>['animal']['latestEvents'][0]>
 
 const AnimalPage: NextPageWithLayout = () => {
   
