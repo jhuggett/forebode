@@ -113,5 +113,48 @@ export const eventTypesRouter = router({
         }
       }
     })
+  }),
+  update: protectedProcedure.input(z.object({
+    id: z.number(),
+    name: z.string()
+  })).mutation(async ({ ctx, input }) => {
+    await prisma.eventType.update({
+      where: {
+        id: input.id
+      },
+      data: {
+        name: input.name
+      }
+    })
+
+    return
+  }),
+  delete: protectedProcedure.input(z.object({
+    id: z.number()
+  })).mutation(async ({ ctx, input }) => {
+
+    await prisma.event.deleteMany({
+      where: {
+        eventTypeId: input.id
+      }
+    })
+
+    await prisma.eventTypeRelationship.deleteMany({
+      where: {
+        eventTypes: {
+          some: {
+            id: input.id
+          }
+        }
+      }
+    })
+
+    await prisma.eventType.delete({
+      where: {
+        id: input.id
+      }
+    })
+
+    return
   })
 })

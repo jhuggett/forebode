@@ -5,12 +5,9 @@ import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
 import { Card } from '../dashboard';
 import { NextPageWithLayout, useAuth } from '../_app';
-import { Event, EventType } from 'prisma/prisma-client'
-import { addMinutes, formatDistanceStrict, formatDistanceToNow, formatRelative, isBefore } from 'date-fns';
-import { VictoryBar, VictoryChart, VictoryLine, VictoryTheme } from 'victory';
+import { addMinutes, formatDistanceToNow, formatRelative, isBefore } from 'date-fns';
 import { inferRouterOutputs } from '@trpc/server';
 import { AppRouter } from '~/server/routers/_app';
-import { useMemo } from 'react';
 
 
 const EventTypeCard = ({ eventType, animalId, name } : {

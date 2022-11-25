@@ -40,13 +40,15 @@ export const Text = <T extends FieldValues,>({
   name,
   label,
   placeholder,
-  required 
+  required,
+  initialValue
 } : { 
   form: UseFormReturn<T>
   name: keyof T
   label: string
   placeholder?: string
-  required?: boolean 
+  required?: boolean
+  initialValue?: string
 }) => {
   return (
     <div className="flex flex-col">
@@ -64,6 +66,7 @@ export const Text = <T extends FieldValues,>({
         {...form.register(name as Path<T>, { 
           required
         })}
+        defaultValue={initialValue}
       />
     </div>
   )
