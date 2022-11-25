@@ -204,7 +204,7 @@ const DashboardPage: NextPageWithLayout = () => {
 	
 
 	return (
-		<div className="mt-12 flex flex-col m-auto w-full max-w-6xl justify-center gap-8 ">
+		<div className="mt-12 flex flex-col m-auto w-full max-w-6xl justify-center gap-8 pb-8">
 			<div className='w-full px-4 justify-center flex flex-wrap gap-4 max-w-6xl'>
 				{ dashboard.relationships.map(relationship => (
 					<RelationshipSummary key={`relationship-${relationship.id}`} relationship={relationship} />
