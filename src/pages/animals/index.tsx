@@ -37,8 +37,9 @@ const AnimalsPage: NextPageWithLayout = () => {
 			{ animals.map(animal => (
         <Card key={`card-${animal.name}`}>
           <CardLink to={`/animals/${animal.id}`} title={`View ${animal.name}`} >
-            { animal.name }
+            <p className='text-lg'>{ animal.name }</p>
           </CardLink>
+          <p className='text-sm font-light'>tracking <span className='text-lg'>{ animal.numberOfEventTypesTracking }</span> types of events</p>
         </Card>
       )) }
       <AddAnAnimal />

@@ -174,7 +174,7 @@ export const Card = ({ children }) =>
 		{ children }
 	</div>
 
-const Divider = ({ children } : { children: ReactNode }) => {
+export const Divider = ({ children } : { children: ReactNode }) => {
 
 
 	return (

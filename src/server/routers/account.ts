@@ -18,7 +18,15 @@ export const accountRouter = router({
         id: ctx.accountId
       },
       include: {
-        animals: true
+        animals: {
+          include: {
+            _count: {
+              select: {
+                eventTypes: true
+              }
+            }
+          }
+        }
       }
     })
 
@@ -28,6 +36,8 @@ export const accountRouter = router({
       })
     }
 
+    
+
     const joiningCode = new JoiningCode(ctx.session.user?.name!, account.id)
 
     return {
@@ -35,7 +45,8 @@ export const accountRouter = router({
       name: account.name,
       animals: account.animals.map(animal => ({
         name: animal.name,
-        id: animal.id
+        id: animal.id,
+        numberOfEventTypesTracking: animal._count.eventTypes
       })),
       joiningCode: joiningCode.toString()
     }

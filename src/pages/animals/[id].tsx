@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { getDashboardLayout } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
-import { Card } from '../dashboard';
+import { Card, Divider } from '../dashboard';
 import { NextPageWithLayout, useAuth } from '../_app';
 import { addMinutes, formatDistanceToNow, formatRelative, isBefore } from 'date-fns';
 import { inferRouterOutputs } from '@trpc/server';
@@ -15,7 +15,6 @@ const EventTypeCard = ({ eventType, animalId, name } : {
   animalId: number,
   name: string
 }) => {
-
   const trpcContext = trpc.useContext()
 
   const {
@@ -44,20 +43,18 @@ const EventTypeCard = ({ eventType, animalId, name } : {
   const canUndo = latestEvent && latestEvent.user.name === name && isBefore(new Date(), addMinutes(latestEvent.createdAt, 10)) 
 
   return (
-    <div className='w-full max-w-md'>
+    <div className=''>
       <Card>
-        <h3 className='text-xl text-center font-mono text-gray-700 font-semibold border-b-2 border-gray-600'>{ eventType.name }</h3>
+        
         { latestEvent ?
           (
-            <div className='m-4'>
-              <p className='text-sm font-light'>
-                Last time
-              </p>
+            <div className='flex flex-col justify-center items-center px-8 pb-8'>
+              <h3 className='text-2xl text-gray-700 font-semibold pb-2'>{ eventType.name }</h3>
               <p className='text-lg'>{`${formatDistanceToNow(latestTime!)} ago`}</p>
               <p className='font-thin'>
                 {`${formatRelative(latestTime!, now)}`}
               </p>
-              <p className='text-xs w-full'>
+              <p className='text-xs'>
                 {`${latestEvent!.user.name}`}
               </p>
             </div>
@@ -66,32 +63,19 @@ const EventTypeCard = ({ eventType, animalId, name } : {
             <p className='py-8 text-center max-w-xs px-2'>Nothing yet. Press the plus icon to capture the first event.</p>
           )
         }
-        <ul className='list-disc'>
-          { eventType.events.slice(1, 5).map(e => {
-            if (!e) return
-
-            const happened = e!.createdAt
-
-            return (
-              <li className='text-sm font-extralight'>
-                {`${formatRelative(happened, now)}, by ${e!.user.name}`}
-              </li>
-            )
-          }) }
-        </ul>
-        <div className='w-full flex justify-end gap-2'>
-          { canUndo &&
-            <button onClick={() => deleteEvent({id: latestEvent.id})} className='text-gray-500'>undo</button>
-          }
-          <button 
-            onClick={() => captureEvent({ animalId, eventTypeId: eventType.id })} 
-            className={`active:scale-90 hover:scale-105 duration-300 ${(capturingEvent || undoingEvent) && 'opacity-50'}`} 
-          >
-            <svg className='x-12 h-12' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM232 368V344 280H168 144V232h24 64V168 144h48v24 64h64 24v48H344 280v64 24H232z"/>
-            </svg>
-          </button>
-        </div>
+          <div className='flex w-full justify-end gap-2'>
+            { canUndo &&
+              <button onClick={() => deleteEvent({id: latestEvent.id})} className='text-gray-500'>undo</button>
+            }
+            <button 
+              onClick={() => captureEvent({ animalId, eventTypeId: eventType.id })} 
+              className={`active:scale-90 hover:scale-105 duration-300 ${(capturingEvent || undoingEvent) && 'opacity-50'}`} 
+            >
+              <svg className='h-14' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+                <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM232 368V344 280H168 144V232h24 64V168 144h48v24 64h64 24v48H344 280v64 24H232z"/>
+              </svg>
+            </button>
+          </div>
       </Card>
     </div>
   )
@@ -130,8 +114,8 @@ const AnimalPage: NextPageWithLayout = () => {
   }
 
 	return (
-		<div className="mt-12 flex flex-col flex-wrap items-center justify-center gap-8">
-      <h1 className='text-4xl text-gray-600 font-serif font-bold flex gap-8 items-center'>
+		<div className="mt-12 flex flex-col gap-8 w-full max-w-7xl m-auto">
+      <h1 className='text-4xl m-auto text-gray-600 font-serif font-bold flex gap-8 items-center'>
         { animal.name }
         <Link href={`/animals/settings/${id}`}>
           <svg className='h-6 hover:cursor-pointer fill-gray-600' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M200 0H312l17.2 78.4c15.8 6.5 30.6 15.1 44 25.4l76.5-24.4 56 97-59.4 54.1c1.1 8.3 1.7 16.8 1.7 25.4s-.6 17.1-1.7 25.4l59.4 54.1-56 97-76.5-24.4c-13.4 10.3-28.2 18.9-44 25.4L312 512H200l-17.2-78.4c-15.8-6.5-30.6-15.1-44-25.4L62.3 432.5l-56-97 59.4-54.1C64.6 273.1 64 264.6 64 256s.6-17.1 1.7-25.4L6.3 176.5l56-97 76.5 24.4c13.4-10.3 28.2-18.9 44-25.4L200 0zm56 336c44.2 0 80-35.8 80-80s-35.8-80-80-80s-80 35.8-80 80s35.8 80 80 80z"/></svg>
