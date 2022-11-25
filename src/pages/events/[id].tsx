@@ -5,7 +5,7 @@ import Link from 'next/link';
 import { useRouter } from 'next/router';
 import { useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
-import { VictoryPie } from 'victory';
+import { VictoryChart, VictoryContainer, VictoryPie } from 'victory';
 import { getDashboardLayout, SignOutButton } from '~/components/DashboardLayout';
 import { Checkbox, SubmitButton, Text } from '~/components/Forms';
 import { Loader } from '~/components/Loader';
@@ -177,12 +177,20 @@ const Graphs = ({ info } : { info: EventTypeInfo }) => {
     <div className='w-full max-w-sm'>
       <Card>
         <h4 className='text-center font-medium '>Who did what?</h4>
-        <VictoryPie
-          data={info.graph_data.filter(data => data._count.Event > 0).map(data => ({
-            x: data.name,
-            y: data._count.Event
-          }))}
-        />
+
+          <VictoryPie
+            containerComponent={<VictoryContainer
+              style={{
+                pointerEvents: "auto",
+                userSelect: "auto",
+                touchAction: "auto"
+              }}
+            />} 
+            data={info.graph_data.filter(data => data._count.Event > 0).map(data => ({
+              x: data.name,
+              y: data._count.Event
+            }))}
+          />
       </Card>
     </div>
   )
