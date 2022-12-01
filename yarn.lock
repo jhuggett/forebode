@@ -304,17 +304,17 @@
   dependencies:
     mini-svg-data-uri "^1.2.3"
 
-"@tanstack/query-core@4.14.3":
-  version "4.14.3"
-  resolved "https://registry.npmjs.org/@tanstack/query-core/-/query-core-4.14.3.tgz"
-  integrity sha512-1OrxZk5jSKAjTIDgH/OHa6GfVpgGDVbCVf3KHQjXLFdutK4PSSXQIyX7I1HvBR3mYKyvFPo6yXKNG7QrkwUj9g==
+"@tanstack/query-core@4.19.0":
+  version "4.19.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/query-core/-/query-core-4.19.0.tgz#be1ad7bfbc4edb68e21ab2a86dd4c52233a40c87"
+  integrity sha512-q+4GvS05nG2UXDE4ng0NU5SQNhT+VqhRTLNVtgVw1tIKJfG3CyYQpP/JwAdzMB7NEqC8L5oo9NAaORxEQN53dg==
 
-"@tanstack/react-query@^4.3.8":
-  version "4.14.3"
-  resolved "https://registry.npmjs.org/@tanstack/react-query/-/react-query-4.14.3.tgz"
-  integrity sha512-PP7DEFsOMl/JaGQr1B4IeGN3lqHrC5EpG+AgG03OlVIOQMtXNhb0N66Nt1pdrladvzYsKD20L3O3550rBzgLtg==
+"@tanstack/react-query@^4.19.0":
+  version "4.19.0"
+  resolved "https://registry.yarnpkg.com/@tanstack/react-query/-/react-query-4.19.0.tgz#353169522ff2e6dcfcc36c95ba4c151974a7ec92"
+  integrity sha512-gP4kmfQ3BvCYxTxA/3Xf0P24iNgW539Thk89KzP7X+i+EvFiWhEUMl1NtuI87bFrVEBHs+1ColFNimDidBh/Ww==
   dependencies:
-    "@tanstack/query-core" "4.14.3"
+    "@tanstack/query-core" "4.19.0"
     use-sync-external-store "^1.2.0"
 
 "@trpc/client@^10.0.0-rc.4":
