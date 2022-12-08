@@ -7,11 +7,29 @@ import { EventTypeRelationshipType, User } from "prisma/prisma-client";
 
 export const eventTypesRouter = router({
   all: protectedProcedure.query(async ({ ctx }) => {
-    return await prisma.eventType.findMany({
+    const eventTypes = await prisma.eventType.findMany({
       where: {
         accountId: ctx.accountId
       }
     })
+
+    const relationships = await prisma.eventTypeRelationship.findMany({
+      where: {
+        eventTypes: {
+          some: {
+            accountId: ctx.accountId
+          }
+        }
+      },
+      include: {
+        eventTypes: true
+      }
+    })
+
+    return {
+      eventTypes,
+      relationships
+    }
   }),
   get: protectedProcedure.input(z.object({
     eventTypeId: z.number()

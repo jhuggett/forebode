@@ -102,9 +102,9 @@ const RelationshipCard = ({ info } : { info: EventTypeInfo } ) => {
             <p className='text-center py-4 italic'>
               No relationships.
             </p>
-            { allTypes?.length > 1 && (
+            { allTypes.eventTypes?.length > 1 && (
               <div className='py-4'>
-                <NativeSelect options={allTypes.filter(t => t.name !== info.name)} asString={option => option.name} onSelect={option => setTypeToRelate(option)} />
+                <NativeSelect options={allTypes.eventTypes.filter(t => t.name !== info.name)} asString={option => option.name} onSelect={option => setTypeToRelate(option)} />
                 <button onClick={() => relate({
                   eventTypeAId: info.id,
                   eventTypeBId: typeToRelate!.id,

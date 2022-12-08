@@ -40,7 +40,7 @@ const AddEventPage: NextPageWithLayout = () => {
 		<div className="mt-12 flex flex-wrap items-center justify-center gap-8">
 			<form className='flex flex-col gap-4 m-8' onSubmit={handleSubmit(onSubmit)}>
         <Text form={form} label='Name' name='name' placeholder='Watered the lawn' required />
-				<Checkbox form={form} label='Account level' name='isAccountLevel' />
+				<Checkbox form={form} label='Household level' name='isAccountLevel' />
         <SubmitButton />
       </form>
 		</div>
