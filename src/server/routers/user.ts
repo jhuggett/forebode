@@ -2,23 +2,7 @@ import { router, publicProcedure } from "../trpc";
 import { z } from "zod";
 import { prisma } from "~/server/prisma";
 import bcrypt from 'bcrypt'
-
-export class JoiningCode {
-  constructor(
-    public userName: string,
-    public accountId: number
-  ) {}
-  
-  static from(str: string) {
-    const decoded = Buffer.from(str, 'base64').toString('utf-8')
-    const [ userName, accountId ] = decoded.split('.')
-    return new JoiningCode(userName!, parseInt(accountId!))
-  }
-
-  toString() {
-    return Buffer.from(`${this.userName}.${this.accountId}`, 'utf-8').toString('base64')
-  }
-}
+import { JoiningCode } from "../joining-code";
 
 export const userRouter = router({
   join: publicProcedure.input(z.object({
@@ -44,7 +28,7 @@ export const userRouter = router({
       }
     })
 
-    const joiningCode =  JoiningCode.from(code)
+    const joiningCode = JoiningCode.from(code)
 
     await prisma.account.update({
       where: {

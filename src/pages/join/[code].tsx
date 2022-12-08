@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import { Loader } from '~/components/Loader';
 import { Email, Password, Text, SubmitButton } from '~/components/Forms';
 import { NextPageWithLayout } from '../_app';
+import { JoiningCode } from '~/server/joining-code';
 
 type FormData = {
   email: string,
@@ -64,7 +65,9 @@ const JoinAccountPage: NextPageWithLayout = () => {
     
   return (
     <div className="h-screen flex flex-col items-center justify-center">
-      <h1 className="text-8xl text-center">Signup</h1>
+      <h1 className="text-4xl text-center mb-4">Sign up & join 
+        <span className='font-semibold text-5xl'>{' '}{ JoiningCode.from(code).accountName }</span>
+      </h1>
       <form className='flex flex-col gap-4 m-8' onSubmit={handleSubmit(onSubmit)}>
         <Text form={form} label='Name' name='userName' placeholder='John' required />
         <Email form={form} required />

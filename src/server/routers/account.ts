@@ -2,7 +2,7 @@ import { prisma } from "~/server/prisma";
 import { TRPCError } from "@trpc/server";
 import { protectedProcedure, router } from "../trpc";
 import { sub } from "date-fns";
-import { JoiningCode } from "./user";
+import { JoiningCode } from "../joining-code";
 
 export const accountRouter = router({
   current: protectedProcedure.query(async ({ ctx }) => {
@@ -38,7 +38,7 @@ export const accountRouter = router({
 
     
 
-    const joiningCode = new JoiningCode(ctx.session.user?.name!, account.id)
+    const joiningCode = new JoiningCode(ctx.session.user?.name!, account.name, account.id)
 
     return {
       id: account.id,
