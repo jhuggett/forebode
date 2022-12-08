@@ -10,9 +10,9 @@ import { inferRouterOutputs } from '@trpc/server';
 import { AppRouter } from '~/server/routers/_app';
 
 
-const EventTypeCard = ({ eventType, animalId, name } : {
+export const EventTypeCard = ({ eventType, animalId, name } : {
   eventType: EventInfo
-  animalId: number,
+  animalId?: number,
   name: string
 }) => {
   const trpcContext = trpc.useContext()
@@ -22,7 +22,11 @@ const EventTypeCard = ({ eventType, animalId, name } : {
     isLoading: capturingEvent
   } = trpc.events.capture.useMutation({
     onSuccess() {
-      trpcContext.animal.latestEvents.invalidate()
+      if (animalId) {
+        trpcContext.animal.latestEvents.invalidate()
+      } else {
+        trpcContext.eventTypes.get.invalidate()
+      }
     }
   })
 
@@ -31,7 +35,11 @@ const EventTypeCard = ({ eventType, animalId, name } : {
     isLoading: undoingEvent
   } = trpc.events.delete.useMutation({
     onSuccess () {
-      trpcContext.animal.latestEvents.invalidate()
+      if (animalId) {
+        trpcContext.animal.latestEvents.invalidate()
+      } else {
+        trpcContext.eventTypes.get.invalidate()
+      }
     }
   })
 

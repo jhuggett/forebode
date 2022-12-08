@@ -11,64 +11,15 @@ import { Checkbox, SubmitButton, Text } from '~/components/Forms';
 import { Loader } from '~/components/Loader';
 import { AppRouter } from '~/server/routers/_app';
 import { trpc } from '~/utils/trpc';
+import { EventTypeCard } from '../animals/[id]';
 import { Card, Divider, EmphaticTimeSince } from '../dashboard';
 import { NextPageWithLayout, useAuth } from '../_app';
 
 const AccountLevelEventCard = ({ info } : { info: EventTypeInfo }) => {
 
-  const trpcContext = trpc.useContext()
+  const { name } = useAuth()
 
-  const {
-    mutate: captureEvent
-  } = trpc.events.capture.useMutation({
-    onSuccess() {
-      trpcContext.eventTypes.get.invalidate()
-    }
-  })
-
-  const latestEvent = info.events[0]
-
-  return (
-    <div className='w-full max-w-sm'>
-      <Card>
-        { latestEvent ? (
-          <div>
-            <div className='m-4'>
-              <p className='text-sm font-light'>
-                Last time
-              </p>
-              <p className='text-lg'>{`${formatDistanceToNow(latestEvent.createdAt)} ago`}</p>
-              <p className='font-thin'>
-                {`${formatRelative(latestEvent.createdAt, new Date())}`}
-              </p>
-              <p className='text-xs w-full'>
-                {`${latestEvent!.user.name}`}
-              </p>
-            </div>
-          </div>
-        ) : (
-          <p>Nothing</p>
-        ) }
-        <ul className='list-disc'>
-        { info.events.map(event => {
-          return (
-            <li className='text-sm font-extralight'>
-              {`${formatRelative(event.createdAt, new Date())}, by ${event.user.name}`}
-            </li>
-          )
-        }) }
-        </ul>
-        
-        <div className='w-full flex justify-end'>
-          <button onClick={() => captureEvent({eventTypeId: info.id})}>
-            <svg className='x-12 h-12' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM232 368V344 280H168 144V232h24 64V168 144h48v24 64h64 24v48H344 280v64 24H232z"/>
-            </svg>
-          </button>
-        </div>
-      </Card>
-    </div>
-  )
+  return <EventTypeCard eventType={info} name={name} />
 }
 
 const AnimalLevelEventCard = ({ info } : { info: EventTypeInfo }) => {
