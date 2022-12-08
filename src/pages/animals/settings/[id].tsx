@@ -3,24 +3,8 @@ import { useRouter } from 'next/router';
 import { getDashboardLayout } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
-import { Event } from 'prisma/prisma-client'
-import { addHours, addMinutes, format, formatDistanceToNow, formatRelative, isAfter, isBefore, subHours } from 'date-fns';
-import { add } from 'date-fns/esm';
 import { NextPageWithLayout } from '~/pages/_app';
 import { Card } from '~/pages/dashboard';
-
-
-/*
-
-for re-introduction later
-
-<Card>
-          <button onClick={() => deleteAnimal({ id })}>
-            Delete
-          </button>
-        </Card>
-
-*/
 
 const AnimalPage: NextPageWithLayout = () => {
   

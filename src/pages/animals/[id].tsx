@@ -3,7 +3,7 @@ import { useRouter } from 'next/router';
 import { getDashboardLayout } from '~/components/DashboardLayout';
 import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
-import { Card, Divider } from '../dashboard';
+import { Card, Divider, EmphaticTimeSince } from '../dashboard';
 import { NextPageWithLayout, useAuth } from '../_app';
 import { addMinutes, formatDistanceToNow, formatRelative, isBefore } from 'date-fns';
 import { inferRouterOutputs } from '@trpc/server';
@@ -45,37 +45,38 @@ const EventTypeCard = ({ eventType, animalId, name } : {
   return (
     <div className=''>
       <Card>
-        
-        { latestEvent ?
-          (
-            <div className='flex flex-col justify-center items-center px-8 pb-8'>
-              <h3 className='text-2xl text-gray-700 font-semibold pb-2'>{ eventType.name }</h3>
-              <p className='text-lg'>{`${formatDistanceToNow(latestTime!)} ago`}</p>
-              <p className='font-thin'>
-                {`${formatRelative(latestTime!, now)}`}
-              </p>
-              <p className='text-xs'>
-                {`${latestEvent!.user.name}`}
-              </p>
+        <div className='flex flex-wrap items-center justify-center gap-8'>
+          { latestEvent ?
+            (
+              <div className='flex flex-col justify-center items-center min-w-fit'>
+                <h3 className='text-2xl text-gray-700 font-semibold pb-2'>Last { eventType.name }</h3>
+                <span className='p-2 m-2 bg-gray-300 rounded-lg'>
+                  <EmphaticTimeSince lastDate={latestTime!} />
+                </span>
+                <p className='font-thin'>
+                  {`${formatRelative(latestTime!, now)}`}
+                </p>
+                <p className='text-xs'>
+                  {`${latestEvent!.user.name}`}
+                </p>
+              </div>
+            )
+            : (
+              <p className='py-8 text-center max-w-xs px-2'>Nothing yet. Press the plus icon to capture the first event.</p>
+            )
+          }
+            <div className='flex flex-col justify-center items-center gap-2'>
+              { canUndo &&
+                <button onClick={() => deleteEvent({id: latestEvent.id})} className='text-gray-500'>undo</button>
+              }
+              <button 
+                onClick={() => captureEvent({ animalId, eventTypeId: eventType.id })} 
+                className={`active:scale-90 hover:scale-105 duration-300 ${(capturingEvent || undoingEvent) && 'opacity-50'}`} 
+              >
+                <svg className='h-14 fill-gray-200 bg-gray-800 rounded-2xl p-2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path d="M470.6 105.4c12.5 12.5 12.5 32.8 0 45.3l-256 256c-12.5 12.5-32.8 12.5-45.3 0l-128-128c-12.5-12.5-12.5-32.8 0-45.3s32.8-12.5 45.3 0L192 338.7 425.4 105.4c12.5-12.5 32.8-12.5 45.3 0z"/></svg>
+              </button>
             </div>
-          )
-          : (
-            <p className='py-8 text-center max-w-xs px-2'>Nothing yet. Press the plus icon to capture the first event.</p>
-          )
-        }
-          <div className='flex w-full justify-end gap-2'>
-            { canUndo &&
-              <button onClick={() => deleteEvent({id: latestEvent.id})} className='text-gray-500'>undo</button>
-            }
-            <button 
-              onClick={() => captureEvent({ animalId, eventTypeId: eventType.id })} 
-              className={`active:scale-90 hover:scale-105 duration-300 ${(capturingEvent || undoingEvent) && 'opacity-50'}`} 
-            >
-              <svg className='h-14' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                <path d="M256 512c141.4 0 256-114.6 256-256S397.4 0 256 0S0 114.6 0 256S114.6 512 256 512zM232 368V344 280H168 144V232h24 64V168 144h48v24 64h64 24v48H344 280v64 24H232z"/>
-              </svg>
-            </button>
-          </div>
+        </div>
       </Card>
     </div>
   )
