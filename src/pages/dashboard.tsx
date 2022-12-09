@@ -18,16 +18,16 @@ export const EmphaticTimeSince = ({ lastDate } : { lastDate: Date }) => {
 	Should also handle weeks, months, and years in the future
 	*/
 
-	if (durationSince.days) return <p className='italic text-2xl text-center font-bold text-gray-900 bg-red-100 rounded-2xl p-2'>
+	if (durationSince.days) return <p className='italic text-2xl text-center font-bold text-gray-900 border-red-600 border-t-8'>
 		{`${durationSince.days}d ${durationSince.hours}h`}
 	</p>
-	if (durationSince.hours) return <p className='italic text-xl text-center font-semibold text-gray-800 bg-yellow-100 rounded-2xl p-2'>
+	if (durationSince.hours) return <p className='italic text-xl text-center font-semibold text-gray-800 border-yellow-300 border-t-4'>
 		{`${durationSince.hours}h ${durationSince.minutes}m`}
 	</p>
-		if (durationSince.minutes) return <p className='italic text-lg text-center text-gray-700 bg-green-100 rounded-2xl p-2'>
+		if (durationSince.minutes) return <p className='italic text-lg text-center text-gray-700 border-green-600 border-t-2'>
 			{`${durationSince.minutes}m ${durationSince.seconds}s`}
 		</p>
-		return <p className='italic text-md font-thin text-center py-1 text-gray-600 bg-green-100 rounded-2xl p-2'>
+		return <p className='italic text-md font-thin text-center py-1 text-gray-600 border-green-600 border-t-2'>
 			{`${durationSince.seconds}s`}
 		</p>
 }
