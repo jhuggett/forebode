@@ -18,16 +18,16 @@ export const EmphaticTimeSince = ({ lastDate } : { lastDate: Date }) => {
 	Should also handle weeks, months, and years in the future
 	*/
 
-	if (durationSince.days) return <p className='italic text-2xl text-center font-bold text-gray-900'>
+	if (durationSince.days) return <p className='italic text-2xl text-center font-bold text-gray-900 bg-red-100 rounded-2xl p-2'>
 		{`${durationSince.days}d ${durationSince.hours}h`}
 	</p>
-	if (durationSince.hours) return <p className='italic text-xl text-center font-semibold text-gray-800'>
+	if (durationSince.hours) return <p className='italic text-xl text-center font-semibold text-gray-800 bg-yellow-100 rounded-2xl p-2'>
 		{`${durationSince.hours}h ${durationSince.minutes}m`}
 	</p>
-		if (durationSince.minutes) return <p className='italic text-lg text-center text-gray-700'>
+		if (durationSince.minutes) return <p className='italic text-lg text-center text-gray-700 bg-green-100 rounded-2xl p-2'>
 			{`${durationSince.minutes}m ${durationSince.seconds}s`}
 		</p>
-		return <p className='italic text-md font-thin text-center py-1 text-gray-600'>
+		return <p className='italic text-md font-thin text-center py-1 text-gray-600 bg-green-100 rounded-2xl p-2'>
 			{`${durationSince.seconds}s`}
 		</p>
 }
@@ -38,10 +38,10 @@ const AnimalSummary = ({ animal } : { animal: AnimalSummary}) => {
 		<div className=''>
 			<Card>
 				<div className=' text-gray-600'>
-					<p className='text-center font-semibold text-lg pb-2'>
-					<CardLink to={`/animals/${animal.id}`} title={`View animal ${animal.name}`} >
-						{animal.name}
-					</CardLink>
+					<p className='text-center font-semibold font-serif text-4xl pb-6'>
+						<CardLink to={`/animals/${animal.id}`} title={`View animal ${animal.name}`} >
+							{animal.name}
+						</CardLink>
 					</p>
 					<div className='w-full flex flex-wrap gap-2 justify-evenly items-center divide-gray-300'>
 						{animal.events.sort((a, b) => a.type.name > b.type.name ? 1 : -1).map(event => {

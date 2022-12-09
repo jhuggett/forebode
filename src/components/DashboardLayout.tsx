@@ -54,7 +54,7 @@ export const DashboardLayout = ({ children }: DashboardLayoutProps) => {
           <div className='flex justify-center items-center mx-4 text-xl font-bold lg:absolute lg:left-2'>
             Forebode
           </div>
-          <div className='flex flex-wrap justify-center items-center gap-4 lg:shadow-xl lg:bg-gray-200 lg:px-4 lg:py-2 rounded-xl'>
+          <div className='flex flex-wrap justify-center items-center gap-4 lg:shadow-xl lg:bg-gray-200 lg:px-8 lg:py-2 rounded-xl'>
             <NavLink href={'/dashboard'}>
               Dashboard
             </NavLink>
