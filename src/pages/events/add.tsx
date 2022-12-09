@@ -6,6 +6,10 @@ import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
 import { NextPageWithLayout, useAuth } from '../_app';
 
+export enum CreateEventType {
+	AccountLevel = 'household'
+}
+
 interface Form {
   name: string,
   isAccountLevel: boolean
@@ -14,6 +18,8 @@ interface Form {
 const AddEventPage: NextPageWithLayout = () => {
 
 	const router = useRouter()
+
+	const isAccountLevel = router.query.type === CreateEventType.AccountLevel
 	
   const form = useForm<Form>()
 	const {
@@ -29,18 +35,17 @@ const AddEventPage: NextPageWithLayout = () => {
 	})
 
 	const onSubmit = ({
-    name,
-		isAccountLevel
+    name
   } : Form) => mutate({
     name,
 		isAccountLevel
   })
 
 	return (
-		<div className="mt-12 flex flex-wrap items-center justify-center gap-8">
+		<div className="mt-12 m-auto flex-col items-center justify-center gap-8 max-w-md">
+			<h2 className='text-center text-xl font-medium'>Create a new { isAccountLevel && 'household' } event type</h2>
 			<form className='flex flex-col gap-4 m-8' onSubmit={handleSubmit(onSubmit)}>
         <Text form={form} label='Name' name='name' placeholder='Watered the lawn' required />
-				<Checkbox form={form} label='Household level' name='isAccountLevel' />
         <SubmitButton />
       </form>
 		</div>

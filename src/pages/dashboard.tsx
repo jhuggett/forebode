@@ -51,8 +51,8 @@ const AnimalSummary = ({ animal } : { animal: AnimalSummary}) => {
 
 							return (
 								<div className='px-2'>
-									<p className='text-sm text-center '>
-									Last { eventType.name }
+									<p className='text-md font-medium text-center '>
+									{ eventType.name }
 									</p>
 									{ latestEvent && (
 										<div className='flex justify-around items-center'>

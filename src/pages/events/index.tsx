@@ -4,6 +4,7 @@ import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
 import { Card, CardLink, Divider } from '../dashboard';
 import { NextPageWithLayout } from '../_app';
+import { CreateEventType } from './add';
 
 
 const AddEventTypeButton = () => (
@@ -16,7 +17,7 @@ const AddEventTypeButton = () => (
 
 const AddAccountLevelEventTypeButton = () => (
   <div className='p-8 rounded-xl border-gray-500 border-2 border-dashed relative'>
-    <CardLink to='/events/add' title='Add a new event'>
+    <CardLink to={`/events/add?type=${CreateEventType.AccountLevel}`} title='Add a new event'>
       Add a new household event
     </CardLink>
   </div>
