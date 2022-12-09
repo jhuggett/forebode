@@ -91,13 +91,7 @@ export const accountRouter = router({
           include: {
             _count: {
               select: {
-                events: {
-                  where: {
-                    createdAt: {
-                      gte: sub(new Date(), { days: 7 })
-                    }
-                  }
-                },
+                events: true,
               },
 
             }

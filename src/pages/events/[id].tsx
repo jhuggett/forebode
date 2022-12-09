@@ -62,68 +62,7 @@ const NativeSelect = <T,>({ options, asString, onSelect } : {
   )
 }
 
-const RelationshipCard = ({ info } : { info: EventTypeInfo } ) => {
-
-  const trpcContext = trpc.useContext()
-
-  const {
-    data: allTypes,
-    isLoading
-  } = trpc.eventTypes.all.useQuery()
-
-  const {
-    mutate: relate
-  } = trpc.eventTypes.relate.useMutation({
-    onSuccess() {
-      trpcContext.eventTypes.get.invalidate()
-    }
-  })
-
-  const [typeToRelate, setTypeToRelate] = useState<EventType>()
-
-  if (isLoading) return <Card><Loader /></Card>
-
-  if (!allTypes) return <div>Whoops</div>
-
-  return (
-    <div className='w-full max-w-sm'>
-      <Card>
-        <h3 className='text-xl font-semibold'>
-          Relationships:
-        </h3>
-        { info.relationships.length > 0 ? (
-          <>{ info.relationships.map(relationship => (
-            <div className='font-light p-2'>
-              Differential relationship between { relationship.eventTypes[0]!.name } and { relationship.eventTypes[1]!.name }.
-            </div>
-          )) }</>
-        ) : (
-          <p>
-            <p className='text-center py-4 italic'>
-              No relationships.
-            </p>
-            { allTypes.eventTypes?.length > 1 && (
-              <div className='py-4'>
-                <NativeSelect options={allTypes.eventTypes.filter(t => t.name !== info.name)} asString={option => option.name} onSelect={option => setTypeToRelate(option)} />
-                <button onClick={() => relate({
-                  eventTypeAId: info.id,
-                  eventTypeBId: typeToRelate!.id,
-                  relationshipType: EventTypeRelationshipType.DIFFERENCE
-                })} className='px-2 py-1 bg-gray-500 rounded-xl text-gray-200 my-2'>
-                  Create differential relationship
-                </button>
-              </div>
-            ) }
-          </p>
-        ) }
-      </Card>
-    </div>
-  )
-}
-
 const Graphs = ({ info } : { info: EventTypeInfo }) => {
-  
-
   return (
     <div className='w-full max-w-sm'>
       <Card>
@@ -182,10 +121,6 @@ const EventPage: NextPageWithLayout = () => {
         <Divider>Analytics</Divider>
         <div className='m-auto'>
           <Graphs info={data} />
-        </div>
-        <Divider>Relationships</Divider>
-        <div className='m-auto'>
-          <RelationshipCard info={data} />
         </div>
       </div>
 		</div>
