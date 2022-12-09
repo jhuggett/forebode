@@ -24,10 +24,10 @@ export const EmphaticTimeSince = ({ lastDate } : { lastDate: Date }) => {
 	if (durationSince.hours) return <p className='italic text-xl text-center font-semibold text-gray-800'>
 		{`${durationSince.hours}h ${durationSince.minutes}m`}
 	</p>
-		if (durationSince.minutes) return <p className='italic text-lg text-center font-medium text-gray-700'>
+		if (durationSince.minutes) return <p className='italic text-lg text-center text-gray-700'>
 			{`${durationSince.minutes}m ${durationSince.seconds}s`}
 		</p>
-		return <p className='italic text-md text-center py-1 text-gray-600'>
+		return <p className='italic text-md font-thin text-center py-1 text-gray-600'>
 			{`${durationSince.seconds}s`}
 		</p>
 }
@@ -170,13 +170,11 @@ export const CardLink = ({ to, title, children }: { to: string, title: string, c
 }
 
 export const Card = ({ children }) => 
-	<div className='bg-gray-200 p-8 shadow-xl rounded-2xl h-fit relative card'>
+	<div className='bg-gray-200 p-8 shadow-md rounded-lg h-fit relative card'>
 		{ children }
 	</div>
 
 export const Divider = ({ children } : { children: ReactNode }) => {
-
-
 	return (
 		<div className="relative flex py-5 items-center">
 			<div className="flex-grow border-t border-gray-400"></div>
