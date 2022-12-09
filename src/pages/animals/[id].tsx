@@ -58,7 +58,7 @@ export const EventTypeCard = ({ eventType, animalId, name } : {
             (
               <div className='flex flex-col justify-center items-center min-w-fit'>
                 <h3 className='text-2xl text-gray-700 font-semibold pb-2'>Last { eventType.name }</h3>
-                <span className='p-2 m-2 bg-gray-300 rounded-lg'>
+                <span className='m-2'>
                   <EmphaticTimeSince lastDate={latestTime!} />
                 </span>
                 <p className='font-thin'>
