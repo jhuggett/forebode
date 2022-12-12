@@ -19,7 +19,11 @@ const AccountLevelEventCard = ({ info } : { info: EventTypeInfo }) => {
 
   const { name } = useAuth()
 
-  return <EventTypeCard eventType={info} name={name} />
+  return <EventTypeCard eventType={{
+    ...info,
+    events_today: info.eventsToday?.events || [],
+    latest: info.events[0]
+  }} name={name} />
 }
 
 const AnimalLevelEventCard = ({ info } : { info: EventTypeInfo }) => {

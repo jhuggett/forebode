@@ -4,6 +4,7 @@ import { prisma } from "../prisma";
 import { protectedProcedure, router } from "../trpc";
 import { Event } from "../../../node_modules/.prisma/client/index"
 import { EventTypeRelationshipType, User } from "prisma/prisma-client";
+import { startOfDay } from "date-fns";
 
 export const eventTypesRouter = router({
   all: protectedProcedure.query(async ({ ctx }) => {
@@ -53,12 +54,34 @@ export const eventTypesRouter = router({
         },
         events: {
           where: {
-            accountId: ctx.accountId
+            accountId: ctx.accountId,
           },
           orderBy: {
             createdAt: 'desc'
           },
-          take: 10,
+          take: 1,
+          include: {
+            user: true
+          }
+        },
+      }
+    })
+
+    const eventsToday = await prisma.eventType.findUnique({
+      where: {
+        id: input.eventTypeId
+      },
+      include: {
+        events: {
+          where: {
+            accountId: ctx.accountId,
+            createdAt: {
+              gte: startOfDay(new Date())
+            }
+          },
+          orderBy: {
+            createdAt: 'desc'
+          },
           include: {
             user: true
           }
@@ -90,7 +113,8 @@ export const eventTypesRouter = router({
       graph_data: userGraphInfo.map(data => ({
         name: data.name,
         _count: data._count
-      }))
+      })),
+      eventsToday
     }
   }),
   relate: protectedProcedure.input(z.object({
