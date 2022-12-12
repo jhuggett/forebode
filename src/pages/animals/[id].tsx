@@ -10,6 +10,26 @@ import { inferRouterOutputs } from '@trpc/server';
 import { AppRouter } from '~/server/routers/_app';
 
 
+const TimesToday = ({ numberOfTimes } : { numberOfTimes: number }) => {
+  let text = ''
+  
+  if (numberOfTimes <= 0) {
+    text = "Hasn't happened today" 
+  } else if (numberOfTimes === 1) {
+    text = "Once today"
+  } else if (numberOfTimes === 2) {
+    text = "Twice today"
+  } else if (numberOfTimes > 1) {
+    text = `${numberOfTimes} times today`
+  }
+
+  return (
+    <p className='text-center font-light text-sm opacity-60'>
+      { text }
+    </p>
+  )
+}
+
 export const EventTypeCard = ({ eventType, animalId, name } : {
   eventType: EventInfo
   animalId?: number,
@@ -43,7 +63,7 @@ export const EventTypeCard = ({ eventType, animalId, name } : {
     }
   })
 
-  const latestEvent = eventType.events[0]
+  const latestEvent = eventType.latest
 
   const latestTime = latestEvent?.createdAt
   const now = new Date()
@@ -84,12 +104,15 @@ export const EventTypeCard = ({ eventType, animalId, name } : {
                 <svg className='w-14 fill-gray-200 bg-gray-800 rounded-2xl p-2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>              </button>
             </div>
         </div>
+        <div className='mt-6'>
+          <TimesToday numberOfTimes={eventType.events_today.length} />
+        </div>
       </Card>
     </div>
   )
 }
 
-type EventInfo = NonNullable<inferRouterOutputs<AppRouter>['animal']['latestEvents'][0]>
+type EventInfo = NonNullable<inferRouterOutputs<AppRouter>['animal']['latestEvents']>[0]
 
 const AnimalPage: NextPageWithLayout = () => {
   

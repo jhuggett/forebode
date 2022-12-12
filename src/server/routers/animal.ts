@@ -1,7 +1,9 @@
 import { prisma } from "~/server/prisma";
 import { protectedProcedure, router } from "../trpc";
-import { z } from "zod";
+import { TypeOf, z } from "zod";
 import { TRPCError } from "@trpc/server";
+import { startOfDay } from "date-fns";
+import { Event, EventType } from "@prisma/client";
 
 export const animalRouter = router({
   create: protectedProcedure.input(
@@ -145,7 +147,7 @@ export const animalRouter = router({
   latestEvents: protectedProcedure.input(z.object({
     animalId: z.number()
   })).query(async ({ ctx, input }) => {
-    return await prisma.eventType.findMany({
+    const eventsToday = await prisma.eventType.findMany({
       where: {
         animals: {
           some: {
@@ -156,12 +158,15 @@ export const animalRouter = router({
       include: {
         events: {
           where: {
-            animalId: input.animalId
+            animalId: input.animalId,
+            createdAt: {
+              gte: startOfDay(new Date())
+            }
           },
           orderBy: {
             createdAt: 'desc'
           },
-          take: 10,
+
           include: {
             user: {
               select: {
@@ -172,6 +177,57 @@ export const animalRouter = router({
         }
       }
     })
+
+    const latestEvents = await prisma.eventType.findMany({
+      where: {
+        animals: {
+          some: {
+            id: input.animalId
+          }
+        }
+      },
+      include: {
+        events: {
+          where: {
+            animalId: input.animalId,
+          },
+          orderBy: {
+            createdAt: 'desc'
+          },
+          take: 1,
+          include: {
+            user: {
+              select: {
+                name: true
+              }
+            }
+          }
+        }
+      }
+    })
+
+    type EventInfo = typeof latestEvents[0]['events'][0]
+
+    const eventTypes = new Map<number, EventType & {
+      latest?: EventInfo,
+      events_today: EventInfo[],
+    }>()
+
+    for (const eventType of eventsToday) {
+      if (!eventTypes.has(eventType.id)) {
+        eventTypes.set(eventType.id, { latest: undefined, events_today: [], ...eventType })
+      }
+      eventTypes.get(eventType.id)!.events_today = eventType.events
+    } 
+
+    for (const eventType of latestEvents) {
+      if (!eventTypes.has(eventType.id)) {
+        eventTypes.set(eventType.id, { latest: undefined, events_today: [], ...eventType })
+      }
+      if (eventType.events.length > 0) eventTypes.get(eventType.id)!.latest = eventType.events[0]
+    } 
+
+    return Array.from(eventTypes.values())
   })
 
 });
