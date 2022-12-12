@@ -2,7 +2,7 @@ import { prisma } from "~/server/prisma";
 import { protectedProcedure, router } from "../trpc";
 import { TypeOf, z } from "zod";
 import { TRPCError } from "@trpc/server";
-import { startOfDay } from "date-fns";
+import { startOfDay, subDays } from "date-fns";
 import { Event, EventType } from "@prisma/client";
 
 export const animalRouter = router({
@@ -160,7 +160,7 @@ export const animalRouter = router({
           where: {
             animalId: input.animalId,
             createdAt: {
-              gte: startOfDay(new Date())
+              gte: subDays(new Date(), 1)
             }
           },
           orderBy: {

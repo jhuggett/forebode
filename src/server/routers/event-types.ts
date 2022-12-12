@@ -4,7 +4,7 @@ import { prisma } from "../prisma";
 import { protectedProcedure, router } from "../trpc";
 import { Event } from "../../../node_modules/.prisma/client/index"
 import { EventTypeRelationshipType, User } from "prisma/prisma-client";
-import { startOfDay } from "date-fns";
+import { startOfDay, subDays } from "date-fns";
 
 export const eventTypesRouter = router({
   all: protectedProcedure.query(async ({ ctx }) => {
@@ -76,7 +76,7 @@ export const eventTypesRouter = router({
           where: {
             accountId: ctx.accountId,
             createdAt: {
-              gte: startOfDay(new Date())
+              gte: subDays(new Date(), 1)
             }
           },
           orderBy: {

@@ -5,9 +5,10 @@ import { Loader } from '~/components/Loader';
 import { trpc } from '~/utils/trpc';
 import { Card, Divider, EmphaticTimeSince } from '../dashboard';
 import { NextPageWithLayout, useAuth } from '../_app';
-import { addMinutes, formatDistanceToNow, formatRelative, isBefore } from 'date-fns';
+import { addMinutes, formatDistanceToNow, formatRelative, isAfter, isBefore, startOfDay } from 'date-fns';
 import { inferRouterOutputs } from '@trpc/server';
 import { AppRouter } from '~/server/routers/_app';
+import { useMemo } from 'react';
 
 
 const TimesToday = ({ numberOfTimes } : { numberOfTimes: number }) => {
@@ -63,6 +64,20 @@ export const EventTypeCard = ({ eventType, animalId, name } : {
     }
   })
 
+  const timesToday = useMemo(() => {
+    let times = 0
+
+    const dateStartOfDay = startOfDay(new Date())
+
+    for (const event of eventType.events_today) {
+      if (isAfter(new Date(event.createdAt), dateStartOfDay)) {
+        times++
+      }
+    }
+
+    return times
+  }, [eventType])
+
   const latestEvent = eventType.latest
 
   const latestTime = latestEvent?.createdAt
@@ -105,7 +120,7 @@ export const EventTypeCard = ({ eventType, animalId, name } : {
             </div>
         </div>
         <div className='mt-6'>
-          <TimesToday numberOfTimes={eventType.events_today.length} />
+          <TimesToday numberOfTimes={timesToday} />
         </div>
       </Card>
     </div>
