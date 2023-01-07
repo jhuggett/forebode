@@ -16,7 +16,6 @@ interface Form {
 }
 
 const AddEventPage: NextPageWithLayout = () => {
-
 	const router = useRouter()
 
 	const isAccountLevel = router.query.type === CreateEventType.AccountLevel

@@ -78,7 +78,17 @@ const AnimalSummary = ({ animal } : { animal: AnimalSummary}) => {
 type RelationshipSummary = NonNullable<inferRouterOutputs<AppRouter>['account']['dashboard']['relationships'][0]>
 const RelationshipSummary = ({ relationship } : { relationship: RelationshipSummary }) => {
 
-	const [firstType, secondType] = relationship.eventTypes
+
+	const {
+		data,
+		isLoading
+	} = trpc.relationship.get.useQuery({
+		id: relationship.id
+	})
+
+	if (isLoading) return <Loader />
+
+	const [firstType, secondType] = data!.eventTypes!
 	if (!firstType || !secondType) {
 		return null
 	}
@@ -89,25 +99,7 @@ const RelationshipSummary = ({ relationship } : { relationship: RelationshipSumm
 	if (secondType._count.events > firstType._count.events) {
 		largerType = secondType
 		lesserType = firstType
-	} else if (secondType._count.events === firstType._count.events) {
-		return (
-			<div className='w-fit'>
-				<Card>
-					<p className='flex flex-col items-center p-2 text-gray-500'>
-						Same number of 
-						<Link href={`/events/${largerType.id}`}>
-							<p className='font-mono font-bold hover:cursor-pointer'>{ largerType.name }</p>
-						</Link>
-						as 
-						<Link href={`/events/${lesserType.id}`}>
-							<p className='font-mono font-bold hover:cursor-pointer'>{ lesserType.name }</p>
-						</Link>
-					</p>
-				</Card>
-			</div>
-		)
 	}
-
 	const difference = largerType._count.events - lesserType._count.events
 
 	return (
@@ -116,15 +108,10 @@ const RelationshipSummary = ({ relationship } : { relationship: RelationshipSumm
 				<div className='flex flex-col items-center gap-1'>
 					<p className='text-4xl font-semibold'>{ difference }</p>
 					<div className='flex gap-2 items-center'>
-						<Link href={`/events/${largerType.id}`}>
-							<p className='font-bold hover:cursor-pointer'>{ largerType.name }</p>
-						</Link>
-						<p className='text-gray-500 font-bold text-xl'>{ '>' }</p>
-						<Link href={`/events/${lesserType.id}`}>
-							<p className='text-gray-500 font-bold hover:cursor-pointer'>{ lesserType.name }</p>
-						</Link>
+						{ relationship.name }
 					</div>
 				</div>
+				<CardLink to={`/events/relationship/${relationship.id}`} title={`View ${relationship.name}`} />
 			</Card>
 		</div>
 	)
@@ -159,7 +146,7 @@ const AccountLevelEventTypeSummary = ({ accountLevelEventType } : { accountLevel
 }
 
 
-export const CardLink = ({ to, title, children }: { to: string, title: string, children: ReactNode }) => {
+export const CardLink = ({ to, title, children }: { to: string, title: string, children?: ReactNode }) => {
 	return (
 		<Link href={ to }>
 			<a title={title} className='after:absolute after:content-[""] after:left-0 after:top-0 after:right-0 after:bottom-0'>

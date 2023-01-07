@@ -23,6 +23,14 @@ const AddAccountLevelEventTypeButton = () => (
   </div>
 )
 
+const AddRelationshipButton = () => (
+  <div className='p-8 rounded-xl border-gray-500 border-2 border-dashed relative'>
+    <CardLink to={`/events/add-relationship`} title='Create a relationship'>
+      Create a new relationship between events
+    </CardLink>
+  </div>
+)
+
 const EventsPage: NextPageWithLayout = () => {
 	
   const {
@@ -72,10 +80,13 @@ const EventsPage: NextPageWithLayout = () => {
 				{ relationships?.map( relationship => {
           return (
             <Card>
-              { `${relationship.relationshipType} relationship between ${relationship.eventTypes.map(eventType => eventType.name).join(' and ')}` }
+              <CardLink to={`/events/relationship/${relationship.id}`} title={`View ${relationship.name}`}>
+                { relationship.name }
+              </CardLink>
             </Card>
           )
         } ) }
+        <AddRelationshipButton />
 			</div>
 		</div>
   );

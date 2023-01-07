@@ -47,25 +47,6 @@ const AnimalLevelEventCard = ({ info } : { info: EventTypeInfo }) => {
   )
 }
 
-
-
-const NativeSelect = <T,>({ options, asString, onSelect } : { 
-  options: T[], 
-  asString: (option: T) => string 
-  onSelect: (option: T) => void
-}) => {
-  const optionMap = useMemo(() => new Map(options.map(option => [asString(option), option])), options)
-  return (
-    <div>
-      <select onChange={e => onSelect(optionMap.get(e.target.value)!)}>
-        { Array.from(optionMap.keys()).map(key => (
-          <option value={key}>{ key }</option>
-        )) }
-      </select>
-    </div>
-  )
-}
-
 const Graphs = ({ info } : { info: EventTypeInfo }) => {
   return (
     <div className='w-full max-w-sm'>

@@ -1,4 +1,5 @@
-import { UseFormReturn, Path, FieldValues } from "react-hook-form"
+import { useMemo } from "react"
+import { UseFormReturn, Path, FieldValues, Controller, FieldPath } from "react-hook-form"
 
 export const Checkbox = <T extends FieldValues,>({ 
   form,
@@ -134,6 +135,62 @@ export const SubmitButton = ({ text }: { text?: string }) => {
       <button type="submit" className='bg-gray-500 w-fit text-gray-200 font-medium px-4 rounded-md py-1'>
         { text || 'Continue' }
       </button>
+    </div>
+  )
+}
+
+export const FormSelect = <T extends FieldValues, Option,>({ 
+  form,
+  name,
+  label,
+  required,
+  options,
+  asString,
+  placeholder
+} : { 
+  form: UseFormReturn<T>
+  name: keyof T
+  label: string
+  required?: boolean
+  initialValue?: string
+  options: Option[]
+  asString: (option: Option) => string,
+  placeholder: string
+}) => {
+  return (
+    <div className="flex flex-col">
+      <label
+        className="text-gray-600 text-sm pl-2" 
+      >
+        { label } { required && '*' }
+      </label>
+      <Controller
+        name={name as FieldPath<T>}
+        control={form.control}
+        rules={{ required }}
+        render={({ field: { onChange } }) => (
+          <NativeSelect options={options} onSelect={onChange} asString={asString} placeholder={placeholder} />
+        )}
+      />
+    </div>
+  )
+}
+
+export const NativeSelect = <T,>({ options, asString, onSelect, placeholder } : { 
+  options: T[], 
+  asString: (option: T) => string 
+  onSelect: (option: T) => void,
+  placeholder: string
+}) => {
+  const optionMap = useMemo(() => new Map(options.map(option => [asString(option), option])), options)
+  return (
+    <div>
+      <select className="p-2 bg-gray-50 text-gray-600 hover:cursor-pointer rounded-lg" onChange={e => onSelect(optionMap.get(e.target.value)!)}>
+        <option disabled selected>{placeholder}</option>
+        { Array.from(optionMap.keys()).map(key => (
+          <option value={key}>{ key }</option>
+        )) }
+      </select>
     </div>
   )
 }

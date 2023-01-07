@@ -120,11 +120,13 @@ export const eventTypesRouter = router({
   relate: protectedProcedure.input(z.object({
     eventTypeAId: z.number(),
     eventTypeBId: z.number(),
+    name: z.string(),
     relationshipType: z.string()
   })).mutation(async ({ ctx, input }) => {
     if (input.relationshipType === EventTypeRelationshipType.DIFFERENCE) {
       await prisma.eventTypeRelationship.create({
         data: {
+          name: input.name,
           relationshipType: EventTypeRelationshipType.DIFFERENCE,
           eventTypes: {
             connect: [{

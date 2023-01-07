@@ -74,12 +74,12 @@ const AnimalPage: NextPageWithLayout = () => {
         
       <div className={`flex flex-wrap justify-center gap-4 w-full px-2`}>
         <Card>
-          <div>
+          <div className='flex flex-col gap-2'>
             { eventTypes.tracked?.map(eventType => {
               return (
-                <span className='flex gap-8 justify-between my-2'>
-                  <p>{ eventType.name }</p>
-                  <button className='bg-gray-500 text-gray-200 px-1 rounded-md' onClick={() => untrackEvent({animalId: id, eventId: eventType.id})}>Stop tracking</button>
+                <span className='flex gap-4 justify-around items-center'>
+                  <p className='text-lg'>{ eventType.name }</p>
+                  <button className='bg-gray-500 text-gray-200 px-2 py-1 rounded-md' onClick={() => untrackEvent({animalId: id, eventId: eventType.id})}>Stop tracking</button>
                 </span>
               )
             }) }
@@ -97,9 +97,15 @@ const AnimalPage: NextPageWithLayout = () => {
           </div>
         </Card>
         <Card>
-          <button onClick={() => deleteAnimal({ id })}>
-            Delete { animal.name }
-          </button>
+          <div className='flex flex-col items-center gap-2'>
+            <button className='bg-red-700 text-white font-bold px-2 py-1 rounded-md' onClick={() => {
+              const confirmed = confirm(`Are you sure you want to delete ${animal.name}? This cannot be undone.`)
+              if (confirmed) deleteAnimal({ id })
+            }}>
+              Delete { animal.name }
+            </button>
+            <p className='text-md opacity-70'>This cannot be undone.</p>
+          </div>
         </Card>
       </div>
 		</div>

@@ -97,6 +97,9 @@ model EventTypeRelationship {
   eventTypes EventType[]
 
   relationshipType EventTypeRelationshipType
+
+  name         String    @default("relationship") @db.VarChar(255)
+  compareSince DateTime?
 }
 
 enum EventTypeRelationshipType {
