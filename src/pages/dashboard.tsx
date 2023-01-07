@@ -32,31 +32,65 @@ export const EmphaticTimeSince = ({ lastDate } : { lastDate: Date }) => {
 		</p>
 }
 
+export const EmphaticDot = ({ lastDate } : { lastDate: Date }) => {
+
+	const now = new Date()
+
+	const durationSince = intervalToDuration({start: lastDate, end: now})
+
+	const char = `•`
+
+	/*
+	Should also handle weeks, months, and years in the future
+	*/
+
+	if (durationSince.days) return <p className='italic leading-tight text-6xl text-center font-bold text-red-700'>
+		<svg className='w-5 fill-red-700' viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+			<circle cx="50" cy="50" r="50" />
+		</svg>
+	</p>
+	if (durationSince.hours) return <p className='italic text-6xl text-center font-semibold text-yellow-500'>
+		<svg className='w-5 fill-yellow-500' viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+			<circle cx="50" cy="50" r="50" />
+		</svg>
+	</p>
+		if (durationSince.minutes) return <p className='italic text-6xl text-center text-green-600'>
+			<svg className='w-5 fill-green-700' viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="50" cy="50" r="50" />
+			</svg>
+		</p>
+		return <p className='italic text-md font-thin text-6xl text-center text-green-600'>
+			<svg className='w-5 fill-green-700' viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+				<circle cx="50" cy="50" r="50" />
+			</svg>
+		</p>
+}
+
 type AnimalSummary = NonNullable<inferRouterOutputs<AppRouter>['account']['dashboard']['animals'][0]>
 const AnimalSummary = ({ animal } : { animal: AnimalSummary}) => {
 	return (
 		<div className=''>
 			<Card>
 				<div className=' text-gray-600'>
-					<p className='text-center font-semibold font-serif text-4xl pb-6'>
+					<p className='font-semibold font-serif text-4xl pb-8'>
 						<CardLink to={`/animals/${animal.id}`} title={`View animal ${animal.name}`} >
 							{animal.name}
 						</CardLink>
 					</p>
-					<div className='w-full flex flex-wrap gap-2 justify-evenly items-center divide-gray-300'>
+					<div className='w-full flex flex-wrap gap-8 justify-evenly items-center divide-gray-300'>
 						{animal.events.sort((a, b) => a.type.name > b.type.name ? 1 : -1).map(event => {
 
 							const latestEvent = event
 							const eventType = event.type
 
 							return (
-								<div className='px-2'>
+								<div className='flex flex-col gap-1'>
 									<p className='text-md font-medium text-center '>
 									{ eventType.name }
 									</p>
 									{ latestEvent && (
 										<div className='flex justify-around items-center'>
-											<EmphaticTimeSince lastDate={latestEvent.createdAt} />
+											<EmphaticDot lastDate={latestEvent.createdAt} />
 										</div>
 										
 									)  }

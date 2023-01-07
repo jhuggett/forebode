@@ -15,7 +15,7 @@ const TimesToday = ({ numberOfTimes } : { numberOfTimes: number }) => {
   let text = ''
   
   if (numberOfTimes <= 0) {
-    text = "Hasn't happened today" 
+    text = "" 
   } else if (numberOfTimes === 1) {
     text = "Once today"
   } else if (numberOfTimes === 2) {
@@ -88,26 +88,9 @@ export const EventTypeCard = ({ eventType, animalId, name } : {
   return (
     <div className=''>
       <Card>
-        <div className='flex flex-row-reverse flex-wrap items-center justify-center gap-8'>
-          { latestEvent ?
-            (
-              <div className='flex flex-col justify-center items-center min-w-fit'>
-                <h3 className='text-2xl text-gray-700 font-semibold pb-2'>Last { eventType.name }</h3>
-                <span className='m-2'>
-                  <EmphaticTimeSince lastDate={latestTime!} />
-                </span>
-                <p className='font-thin'>
-                  {`${formatRelative(latestTime!, now)}`}
-                </p>
-                <p className='text-xs'>
-                  {`${latestEvent!.user.name}`}
-                </p>
-              </div>
-            )
-            : (
-              <p className='py-8 text-center max-w-xs px-2'>Nothing yet. Press the plus icon to capture the first event.</p>
-            )
-          }
+        <div className='flex flex-row-reverse flex-wrap items-center justify-center gap-8 px-8'>
+          <div className='flex flex-col gap-4 justify-center items-center min-w-fit'>
+            <h3 className='text-2xl text-gray-700 font-semibold pb-2'>Last { eventType.name }</h3>
             <div className='flex flex-col justify-center items-center gap-2'>
               { canUndo &&
                 <button onClick={() => deleteEvent({id: latestEvent.id})} className='text-gray-500'>undo</button>
@@ -118,6 +101,24 @@ export const EventTypeCard = ({ eventType, animalId, name } : {
               >
                 <svg className='w-14 fill-gray-200 bg-gray-800 rounded-2xl p-2' xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512"><path d="M256 80c0-17.7-14.3-32-32-32s-32 14.3-32 32V224H48c-17.7 0-32 14.3-32 32s14.3 32 32 32H192V432c0 17.7 14.3 32 32 32s32-14.3 32-32V288H400c17.7 0 32-14.3 32-32s-14.3-32-32-32H256V80z"/></svg>              </button>
             </div>
+            { latestTime ? (
+              <div className='flex flex-col items-center gap-1'>
+                <span className=''>
+                  <EmphaticTimeSince lastDate={latestTime!} />
+                </span>
+                <p className='font-thin'>
+                  {`${formatRelative(latestTime!, now)}`}
+                </p>
+                <p className='text-xs'>
+                  {`${latestEvent!.user.name}`}
+                </p>
+              </div>
+            ) : (
+              <p className=' text-center max-w-xs px-2'>Hasn't been noted yet.</p>
+            )}
+          </div>
+      
+            
         </div>
         <div className='mt-6'>
           <TimesToday numberOfTimes={timesToday} />
